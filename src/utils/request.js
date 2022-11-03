@@ -4,7 +4,7 @@ import store from '@/store'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, 
+  baseURL: 'http://ihrm.itheima.net/api/',
   timeout: 5000
 })
 
