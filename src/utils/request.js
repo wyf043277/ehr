@@ -4,7 +4,7 @@ import store from '@/store'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://ihrm.itheima.net/api/',
+  baseURL: 'http://localhost:9528/api/',
   timeout: 5000
 })
 

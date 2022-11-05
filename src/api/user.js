@@ -5,7 +5,7 @@ import request from '@/utils/request.js'
  * @param {*} password 密码
  */
 export function loginApi(mobile,password){
-  console.log(1111111)
+  console.log(123456)
   return request({
     method:'POST',
     url:'sys/login',

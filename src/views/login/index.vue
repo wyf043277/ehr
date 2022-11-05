@@ -54,7 +54,6 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-
 export default {
   name: 'Login',
   data() {
