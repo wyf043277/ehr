@@ -19,6 +19,7 @@ const mutations = {
   },
   SET_TOKEN: (state, token) => {
     state.token = token
+    setToken(token)
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -36,8 +37,9 @@ const actions = {
       console.log(userInfo)
       try{
          const res=await loginApi(mobile ,password)
+         commit('SET_TOKEN',res.data)
+         resolve(res)
       }catch (err) {
-        console.log(err)
         reject(err)
       }
     })

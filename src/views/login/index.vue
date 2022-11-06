@@ -64,13 +64,6 @@ export default {
         callback()
       }
     }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不能少于6位'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
         mobile: '13800000002',
@@ -78,7 +71,7 @@ export default {
       },
       loginRules: {
         mobile: [{ required: true, trigger: 'blur', validator: validateMobile }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur',min:6,max:16,message:'密码长度在6-16位之间'}]
       },
       loading: false,
       passwordType: 'password',
@@ -108,10 +101,12 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          this.$store.dispatch('user/login', this.loginForm).then((res) => {
+            console.log(res)
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          }).catch((err) => {
+          console.log('请求失败')
             this.loading = false
           })
         } else {
