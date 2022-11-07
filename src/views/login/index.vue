@@ -71,7 +71,7 @@ export default {
       },
       loginRules: {
         mobile: [{ required: true, trigger: 'blur', validator: validateMobile }],
-        password: [{ required: true, trigger: 'blur',min:6,max:16,message:'密码长度在6-16位之间'}]
+        password: [{ required: true, trigger: 'blur', min: 6, max: 16, message: '密码长度在6-16位之间' }]
       },
       loading: false,
       passwordType: 'password',
@@ -106,7 +106,7 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch((err) => {
-          console.log('请求失败')
+            console.log('请求失败')
             this.loading = false
           })
         } else {

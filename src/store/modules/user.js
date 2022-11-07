@@ -26,7 +26,12 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  REMOVE_TOKEN(state, token){
+    state.token = token=''
+    removeToken()
   }
+
 }
 
 const actions = {
