@@ -97,19 +97,40 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
+    // handleLogin() {
+    //   this.$refs.loginForm.validate(valid => {
+    //     if (valid) {
+    //       this.loading = true
+    //       this.$store.dispatch('user/login', this.loginForm).then((res) => {
+    //         console.log(res)
+    //         this.$router.push({ path: this.redirect || '/' })
+    //         this.loading = false
+    //       }).catch((err) => {
+    //         console.log('请求失败')
+    //         this.loading = false
+    //       })
+    //     } else {
+    //       console.log('error submit!!')
+    //       return false
+    //     }
+    //   })
+    // }
+    handleLogin(){
+      this.$refs.loginForm.validate( async valid => {
+        if(valid){
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then((res) => {
-            console.log(res)
+         try{
+            const loginInfo=await this.$store.dispatch('user/login', this.loginForm)
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch((err) => {
-            console.log('请求失败')
-            this.loading = false
-          })
-        } else {
+            this.$message.success(loginInfo.message)
+            const userInfo=await this.$store.dispatch('user/getInfo')
+         }catch(e){
+           //TODO handle the exception
+           console.log('请求失败')
+           this.loading = false
+         }
+        }else {
           console.log('error submit!!')
           return false
         }

@@ -9,8 +9,8 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <span>管理员</span>
+          <img src="https://project-waimai.oss-cn-hangzhou.aliyuncs.com/blog/IMG_1515.PNG" class="user-avatar">
+          <span class="username">{{userInfo.username}}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -45,7 +45,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'userInfo'
     ])
   },
   methods: {
@@ -131,6 +131,9 @@ export default {
     .avatar-container {
       margin-right: 30px;
       .avatar-wrapper {
+        .username{
+          font-size: 13px;
+        }
         // margin-top: 5px;
         position: relative;
         .user-avatar {

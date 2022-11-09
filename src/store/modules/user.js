@@ -1,4 +1,4 @@
-import { loginApi } from '@/api'
+import { loginApi,getUserProfileAPI } from '@/api'
 
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -6,8 +6,7 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
-    avatar: ''
+    userInfo: {},
   }
 }
 
@@ -21,11 +20,8 @@ const mutations = {
     state.token = token
     setToken(token)
   },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo = userInfo
   },
   REMOVE_TOKEN(state, token){
     state.token = token=''
@@ -35,7 +31,7 @@ const mutations = {
 }
 
 const actions = {
-  // user login
+  // 用户登录
   login({ commit }, userInfo) {
     const { mobile, password } = userInfo
     return new Promise(async (resolve, reject) => {
@@ -50,22 +46,16 @@ const actions = {
     })
   },
 
-  // get user info
-  getInfo({ commit, state }) {
+  // 获取用户信息
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
+      getUserProfileAPI(state).then(response => {
+        console.log(response)
+        const {data}=response
+        commit('SET_USERINFO', data)
+        resolve(response)
       }).catch(error => {
+        console.log(error)
         reject(error)
       })
     })

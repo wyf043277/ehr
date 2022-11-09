@@ -26,7 +26,6 @@ service.interceptors.response.use(
   response => {
     const {success,message}=response.data
     if(success){
-      Message.success(message)
       return response.data
     }else {
       Message.error(message)
