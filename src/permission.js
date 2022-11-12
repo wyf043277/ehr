@@ -14,7 +14,16 @@ router.beforeEach(async(to, from, next) => {
       next('/')
       NProgress.done()
     }else{
-      next()
+      try{
+        if(!store.getters.unserInfo){
+          //如果没有用户信息需要去获取一次用户信息
+          const userInfo=await store.dispatch('user/getInfo')
+          next()
+        }
+      }catch(e){
+        store.dispatch('user/resetToken')
+        next('/login')
+      }
     }
   }else{
     if(whiteList.includes(to.path)){

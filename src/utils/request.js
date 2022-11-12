@@ -5,7 +5,7 @@ import store from '@/store'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000
+  timeout: 10000
 })
 
 service.interceptors.request.use(
@@ -16,7 +16,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    console.log(111) // for debug
+    console.log(error)
     return Promise.reject(error)
   }
 )
@@ -33,6 +33,7 @@ service.interceptors.response.use(
     }
   },
   error => {
+    console.log((error.response&&error.response.data&&error.response.data.message)||error.message)
     Massage.error((error.response&&error.response.data&&error.response.data.message)||error.message)
     return Promise.reject(error)
   }

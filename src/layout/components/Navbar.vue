@@ -53,7 +53,7 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
+      await this.$store.dispatch('user/resetToken')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
@@ -131,6 +131,7 @@ export default {
     .avatar-container {
       margin-right: 30px;
       .avatar-wrapper {
+        color:#fff;
         .username{
           font-size: 13px;
         }

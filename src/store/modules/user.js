@@ -62,16 +62,9 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout(store) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      store.dispatch('resetToken')
     })
   },
 

@@ -124,7 +124,6 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
             this.$message.success(loginInfo.message)
-            const userInfo=await this.$store.dispatch('user/getInfo')
          }catch(e){
            //TODO handle the exception
            console.log('请求失败')
