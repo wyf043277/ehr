@@ -67,6 +67,15 @@
       border: none;
       height: 100%;
       width: 100% !important;
+      .is-active{
+        background-color:$menuText !important;
+        span{
+          color:$menuActiveText !important;
+        }
+        .svg-icon{
+          color:$menuActiveText !important;
+        }
+      }
       a{
         li{
           .svg-icon{

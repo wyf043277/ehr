@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -28,13 +29,18 @@ service.interceptors.response.use(
     if(success){
       return response.data
     }else {
+      console.log(response)
       Message.error(message)
       return Promise.reject(message)
     }
   },
-  error => {
-    console.log((error.response&&error.response.data&&error.response.data.message)||error.message)
-    Massage.error((error.response&&error.response.data&&error.response.data.message)||error.message)
+  async error => {
+    console.log((error.response&&error.response.data&&error.response.data.code)||error.message)
+    console.log(router.currentRoute.fullPath)
+    if(error?.response?.data?.code===10002){
+      await store.dispatch('user/resetToken')
+      router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
+    }
     return Promise.reject(error)
   }
 )

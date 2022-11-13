@@ -55,7 +55,6 @@ const actions = {
         commit('SET_USERINFO', data)
         resolve(response)
       }).catch(error => {
-        console.log(error)
         reject(error)
       })
     })

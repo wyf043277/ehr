@@ -2,6 +2,7 @@ import router from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import store from '@/store'
+import getPageTitle from '@/utils/get-page-title.js'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -21,8 +22,7 @@ router.beforeEach(async(to, from, next) => {
           next()
         }
       }catch(e){
-        store.dispatch('user/resetToken')
-        next('/login')
+        console.log(e)
       }
     }
   }else{
@@ -36,7 +36,8 @@ router.beforeEach(async(to, from, next) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to) => {
   // finish progress bar
+  document.title=getPageTitle(to.meta.title)
   NProgress.done()
 })
