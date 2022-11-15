@@ -33,18 +33,18 @@
                   </div>
                 </div>
               </div>
-              <el-tree :props="defaultProps" :data="data" node-key="id" default-expand-all :expand-on-click-node="false" class="tree">
+              <el-tree :props="defaultProps" :data="treeData" node-key="id" default-expand-all expand-on-click-node class="tree">
                 <template slot-scope="{node,data}">
                   <div class="department-wrap">
                     <!-- 第一列20份 -->
                     <div>
-                      <span>{{ node.label }}</span>
+                      <span>{{ data.name }}</span>
                     </div>
                     <!-- 第二列4份 -->
                     <div>
                       <!-- 在容器范围里, 一行再分2列 -->
                       <div class="interactive">
-                        <div class="interactive-content">负责人</div>
+                        <div class="interactive-content">{{ data.manager }}</div>
                         <div class="interactive-content">
                           <el-dropdown>
                             <!-- 下拉菜单文字 -->
@@ -73,47 +73,38 @@
 </template>
 
 <script>
+import { getDepartmentsListAPI } from '@/api'
 export default {
   data() {
     return {
-      data: [{
-        label: '一级 1',
-        children: [{
-          label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
-        }]
-      }, {
-        label: '一级 2',
-        children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
-        }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
-        }]
-      }, {
-        label: '一级 3',
-        children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 3-1-1'
-          }]
-        }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
-        }]
-      }],
+      data: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
+      }
+    }
+  },
+  computed: {
+    treeData() {
+      const reg = /部$/
+      return this.data.filter(item => {
+        return reg.test(item.name)
+      })
+    }
+  },
+  beforeMount() {
+    this.getDepartmentsList()
+  },
+  methods: {
+    async getDepartmentsList() {
+      try {
+        const res = await getDepartmentsListAPI()
+        console.log(res)
+        this.data = res.data.depts
+        console.log(this.treeData)
+      } catch (e) {
+        // TODO handle the exception
+        this.$message.error('获取组织架构失败')
       }
     }
   }
@@ -142,7 +133,7 @@ export default {
     }
   }
   .tree{
-    margin-top:15px;
+    margin-top:12px;
   }
   .department-wrap{
     width: 100%;
