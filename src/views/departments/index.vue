@@ -1,6 +1,19 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
+      <!-- 添加部门弹窗 -->
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose"
+      >
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
       <el-card>
         <div slot="header">
           <el-tabs value="first">
@@ -53,9 +66,9 @@
                             </span>
                             <!-- 下拉项 -->
                             <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item>添加子部门</el-dropdown-item>
-                              <el-dropdown-item>编辑部门</el-dropdown-item>
-                              <el-dropdown-item>删除部门</el-dropdown-item>
+                              <el-dropdown-item @click.native="add(data)">添加子部门</el-dropdown-item>
+                              <el-dropdown-item @click.native="edit(data)">编辑部门</el-dropdown-item>
+                              <el-dropdown-item @click.native="del(data)">删除部门</el-dropdown-item>
                             </el-dropdown-menu>
                           </el-dropdown>
                         </div>
@@ -81,18 +94,19 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'name'
-      }
+      },
+      dialogVisible: false
     }
   },
   computed: {
     treeData() {
       const reg = /部$/
-      let temp = this.data.filter(item => {
+      const temp = this.data.filter(item => {
         return reg.test(item.name)
       })
       console.log(temp)
       console.log(this.handleDepart(temp))
-      return this.handleDepart(temp,"")
+      return this.handleDepart(temp, '')
     }
   },
   beforeMount() {
@@ -109,20 +123,32 @@ export default {
         this.$message.error('获取组织架构失败')
       }
     },
-    handleDepart(arr,pid){
-      let res=[]
-      arr.forEach((item)=>{
-        if(item.pid==pid){
-          let children=this.handleDepart(arr,item.id)
-          if(children.length!=0){
-          res.push({...item,children})
-          }else{
-          res.push(item)
+    handleDepart(arr, pid) {
+      const res = []
+      arr.forEach((item) => {
+        if (item.pid == pid) {
+          const children = this.handleDepart(arr, item.id)
+          if (children.length != 0) {
+            res.push({ ...item, children })
+          } else {
+            res.push(item)
           }
         }
       })
-        return res
-    }
+      return res
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    add(data) {
+      this.dialogVisible = true
+    },
+    edit(data) {},
+    del(data) {}
   }
 }
 </script>
