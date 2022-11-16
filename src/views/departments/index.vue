@@ -87,9 +87,12 @@ export default {
   computed: {
     treeData() {
       const reg = /部$/
-      return this.data.filter(item => {
+      let temp = this.data.filter(item => {
         return reg.test(item.name)
       })
+      console.log(temp)
+      console.log(this.handleDepart(temp))
+      return this.handleDepart(temp,"")
     }
   },
   beforeMount() {
@@ -103,9 +106,22 @@ export default {
         this.data = res.data.depts
         console.log(this.treeData)
       } catch (e) {
-        // TODO handle the exception
         this.$message.error('获取组织架构失败')
       }
+    },
+    handleDepart(arr,pid){
+      let res=[]
+      arr.forEach((item)=>{
+        if(item.pid==pid){
+          let children=this.handleDepart(arr,item.id)
+          if(children.length!=0){
+          res.push({...item,children})
+          }else{
+          res.push(item)
+          }
+        }
+      })
+        return res
     }
   }
 }
