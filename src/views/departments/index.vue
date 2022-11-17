@@ -8,11 +8,11 @@
         width="30%"
         :before-close="handleClose"
       >
-        <span>这是一段信息</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
+      <departDialog></departDialog>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
       </el-dialog>
       <el-card>
         <div slot="header">
@@ -87,6 +87,7 @@
 
 <script>
 import { getDepartmentsListAPI } from '@/api'
+import departDialog from './components/departDialog.vue'
 export default {
   data() {
     return {
@@ -97,6 +98,9 @@ export default {
       },
       dialogVisible: false
     }
+  },
+  components:{
+    departDialog
   },
   computed: {
     treeData() {
