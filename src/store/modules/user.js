@@ -50,7 +50,6 @@ const actions = {
   getInfo({ commit }) {
     return new Promise((resolve, reject) => {
       getUserProfileAPI(state).then(response => {
-        console.log(response)
         const {data}=response
         commit('SET_USERINFO', data)
         resolve(response)

@@ -21,3 +21,12 @@ export function addDepartmentAPI() {
     url: '/company/department',
   })
 }
+
+/** 
+ * 组织架构 - 获取员工简单列表
+ */
+export function getEmpolyeesSimpleListAPI(){
+  return request({
+    url: '/sys/user/simple',
+  })
+}

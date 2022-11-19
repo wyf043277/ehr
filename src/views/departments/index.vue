@@ -3,15 +3,15 @@
     <div class="app-container">
       <!-- 添加部门弹窗 -->
       <el-dialog
-        title="提示"
+        title="添加子部门"
         :visible.sync="dialogVisible"
-        width="30%"
+        width="50%"
         :before-close="handleClose"
       >
-      <departDialog></departDialog>
+      <departDialog ref="departDialog"></departDialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="dialogCancel">取 消</el-button>
+        <el-button type="primary" @click="dialogConfirm">确 定</el-button>
       </span>
       </el-dialog>
       <el-card>
@@ -58,7 +58,7 @@
                       <!-- 在容器范围里, 一行再分2列 -->
                       <div class="interactive">
                         <div class="interactive-content">{{ data.manager }}</div>
-                        <div class="interactive-content">
+                        <div class="interactive-content" @click.stop>
                           <el-dropdown>
                             <!-- 下拉菜单文字 -->
                             <span class="el-dropdown-link">
@@ -108,8 +108,6 @@ export default {
       const temp = this.data.filter(item => {
         return reg.test(item.name)
       })
-      console.log(temp)
-      console.log(this.handleDepart(temp))
       return this.handleDepart(temp, '')
     }
   },
@@ -120,9 +118,7 @@ export default {
     async getDepartmentsList() {
       try {
         const res = await getDepartmentsListAPI()
-        console.log(res)
         this.data = res.data.depts
-        console.log(this.treeData)
       } catch (e) {
         this.$message.error('获取组织架构失败')
       }
@@ -152,7 +148,14 @@ export default {
       this.dialogVisible = true
     },
     edit(data) {},
-    del(data) {}
+    del(data) {},
+    dialogCancel(){
+      this.dialogVisible=false
+      console.log(this.$refs.departDialog.form)
+    },
+    dialogConfirm(){
+      this.dialogVisible=false
+    }
   }
 }
 </script>

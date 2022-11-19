@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item label="部门负责人">
         <el-select v-model="form.manager" style="width: 80%;" placeholder="1-50个字符">
-          <el-option />
+         <el-option value="1"/>
         </el-select>
       </el-form-item>
       <el-form-item label="部门介绍">
@@ -20,16 +20,31 @@
 </template>
 
 <script>
+  import { getEmpolyeesSimpleListAPI } from '@/api'
 export default {
   data() {
     return {
       form: {
-        name: '', // 部门名称
+        name: '123', // 部门名称
         code: '', // 部门编码
         manager: '', // 部门负责人
         introduce: ''// 部门介绍
       }
     }
+  },
+  methods:{
+    async getEmpolyeesSimpleList(){
+      try{
+        let res = await getEmpolyeesSimpleListAPI()
+        console.log(res)
+      }catch(e){
+        //TODO handle the exception
+        console.log("获取用户列表失败")
+      }
+    }
+  },
+  beforeMount(){
+    this.getEmpolyeesSimpleList()
   }
 }
 </script>
