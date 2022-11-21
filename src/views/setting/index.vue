@@ -1,6 +1,20 @@
 <template>
   <div class="setting-container">
     <div class="app-container">
+      <!-- 增加角色弹窗 -->
+      <el-dialog
+        :title="dialog"
+        :visible.sync="dialogVisible"
+        width="50%"
+        :before-close="handleClose"
+        @close="dialogClose"
+      >
+      <roleDialog ref="roleDialog"></roleDialog>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCancel">取 消</el-button>
+        <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+      </span>
+      </el-dialog>
       <!-- 卡片组件 -->
       <el-card class="box-card">
         <!-- 使用 Tabs 组件完成标签页布局 -->
@@ -12,10 +26,11 @@
                icon="el-icon-plus"
                size="small"
                type="primary"
+               @click="addRoles"
               >新增角色</el-button>
             </el-row>
             <!-- 使用 Table 组件实现用户角色的渲染 -->
-            <el-table border stripe style="width: 100%" :data="rolesList" >
+            <el-table border stripe style="width: 100%" :data="rolesListyhuan" >
               <el-table-column type="index" label="序号" width="120" align="center"/>
               <el-table-column label="角色名" width="240" prop="name" align="center"/>
               <el-table-column label="描述" prop="description" align="center"/>
@@ -48,16 +63,16 @@
             />
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input disabled style="width:400px" />
+                <el-input disabled style="width:400px" value="江苏WYF股份有限公司"/>
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input disabled style="width:400px" />
+                <el-input disabled style="width:400px"  value="江苏省无锡市江阴市"/>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input disabled style="width:400px" />
+                <el-input disabled style="width:400px" value="2423839638@qq.com" />
               </el-form-item>
               <el-form-item label="备注">
-                <el-input type="textarea" :rows="3" disabled style="width:400px" />
+                <el-input type="textarea" :rows="3" disabled style="width:400px" value="仅个人展示" />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -69,7 +84,11 @@
 
 <script>
   import {getRolesAPI} from '@/api'
+  import roleDialog from './components/roleDialog.vue'
 export default {
+  components: {
+    roleDialog
+  },
   data() {
     return {
       activeName: 'first',
@@ -78,7 +97,16 @@ export default {
         pagesize: 10 // 页面显示的条数
       },
       rolesList: [], // 角色列表
-      total: 0 // 角色数据总条数
+      total: 0 ,// 角色数据总条数
+      dialog:"新增角色",//弹窗标题 编辑角色 新增角色
+      dialogVisible:false
+    }
+  },
+  computed: {
+    rolesListyhuan() {
+      return this.rolesList.filter(item=>{
+        return item.name.indexOf('员')!=-1
+      })
     }
   },
   methods: {
@@ -87,6 +115,10 @@ export default {
 
     // 当前页面发生改变时触发
     handleCurrentChange() {},
+
+    addRoles(){
+      this.dialogVisible=true
+    },
 
     // 设置角色
     setRoles() {},
@@ -110,6 +142,32 @@ export default {
       }catch(e){
         console.log(e)
       }
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？','提示',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      })
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    dialogClose(){
+      //当弹窗关闭时，清空表单
+      this.$nextTick(() => {
+        this.$refs.roleDialog.$refs.roleForm.resetFields()
+      })
+    },
+    dialogCancel(){
+      this.dialogVisible=false
+    },
+    dialogConfirm(){
+      this.$refs.roleDialog.$refs.roleForm.validate(async valid =>{
+        if(valid){
+          this.dialogVisible=false
+        }
+      })
     }
   },
   mounted() {
