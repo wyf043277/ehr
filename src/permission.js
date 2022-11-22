@@ -18,8 +18,8 @@ router.beforeEach(async(to, from, next) => {
       try{
         if(!store.getters.unserInfo){
           //如果没有用户信息需要去获取一次用户信息
-          const userInfo=await store.dispatch('user/getInfo')
           next()
+          const userInfo=await store.dispatch('user/getInfo')
         }
       }catch(e){
         console.log(e)

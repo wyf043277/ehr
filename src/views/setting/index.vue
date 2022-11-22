@@ -9,11 +9,11 @@
         :before-close="handleClose"
         @close="dialogClose"
       >
-      <roleDialog ref="roleDialog"></roleDialog>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogCancel">取 消</el-button>
-        <el-button type="primary" @click="dialogConfirm">确 定</el-button>
-      </span>
+        <roleDialog ref="roleDialog" :edit-data="editData" />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogCancel">取 消</el-button>
+          <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+        </span>
       </el-dialog>
       <!-- 卡片组件 -->
       <el-card class="box-card">
@@ -21,19 +21,19 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="角色管理" name="first" class="tab-pane">
             <!-- 新增角色按钮 -->
-           <el-row style="height:60px">
-             <el-button
-               icon="el-icon-plus"
-               size="small"
-               type="primary"
-               @click="addRoles"
+            <el-row style="height:60px">
+              <el-button
+                icon="el-icon-plus"
+                size="small"
+                type="primary"
+                @click="addRoles"
               >新增角色</el-button>
             </el-row>
             <!-- 使用 Table 组件实现用户角色的渲染 -->
-            <el-table border stripe style="width: 100%" :data="rolesListyhuan" >
-              <el-table-column type="index" label="序号" width="120" align="center"/>
-              <el-table-column label="角色名" width="240" prop="name" align="center"/>
-              <el-table-column label="描述" prop="description" align="center"/>
+            <el-table border stripe style="width: 100%" :data="rolesListyhuan">
+              <el-table-column type="index" label="序号" width="120" align="center" />
+              <el-table-column label="角色名" width="240" prop="name" align="center" />
+              <el-table-column label="描述" prop="description" align="center" />
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
                   <el-button size="small" type="success" @click="setRoles(scope.row)">分配权限</el-button>
@@ -48,8 +48,7 @@
               :current-page="query.page"
               :page-sizes="[10, 15, 20, 25]"
               :page-size="query.pagesize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
+              layout="sizes, prev, pager, next, jumper"
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
             />
@@ -63,10 +62,10 @@
             />
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input disabled style="width:400px" value="江苏WYF股份有限公司"/>
+                <el-input disabled style="width:400px" value="江苏WYF股份有限公司" />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input disabled style="width:400px"  value="江苏省无锡市江阴市"/>
+                <el-input disabled style="width:400px" value="江苏省无锡市江阴市" />
               </el-form-item>
               <el-form-item label="邮箱">
                 <el-input disabled style="width:400px" value="2423839638@qq.com" />
@@ -83,8 +82,8 @@
 </template>
 
 <script>
-  import {getRolesAPI} from '@/api'
-  import roleDialog from './components/roleDialog.vue'
+import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI } from '@/api'
+import roleDialog from './components/roleDialog.vue'
 export default {
   components: {
     roleDialog
@@ -97,17 +96,20 @@ export default {
         pagesize: 10 // 页面显示的条数
       },
       rolesList: [], // 角色列表
-      total: 0 ,// 角色数据总条数
-      dialog:"新增角色",//弹窗标题 编辑角色 新增角色
-      dialogVisible:false
+      dialog: '新增角色', // 弹窗标题 编辑角色 新增角色
+      dialogVisible: false,
+      editData: {} // 要编辑的角色数据
     }
   },
   computed: {
     rolesListyhuan() {
-      return this.rolesList.filter(item=>{
-        return item.name.indexOf('员')!=-1
+      return this.rolesList.filter(item => {
+        return item.name.indexOf('员') !== -1
       })
     }
+  },
+  mounted() {
+    this.getRoles(this.query)
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -116,62 +118,87 @@ export default {
     // 当前页面发生改变时触发
     handleCurrentChange() {},
 
-    addRoles(){
-      this.dialogVisible=true
+    addRoles() {
+      this.dialogVisible = true
+      this.dialog = '新增角色'
     },
 
-    // 设置角色
+    // 设置角色 分配权限
     setRoles() {},
 
     // 编辑角色
-    editRoles() {},
+    async editRoles(data) {
+      // 数据回显
+      try {
+        const res = await getRoleByIdAPI(data.id)
+        this.editData = res.data
+        this.dialogVisible = true
+        this.dialog = '编辑角色'
+      } catch (e) {
+        console.log(e)
+      }
+    },
 
     // 删除角色
     delRoles() {},
-    async getRoles(params){
-      try{
-        let res = await getRolesAPI(params)
-        if(res.success){
-          let data=res.data
+    async getRoles(params) {
+      // 后台获取角色
+      try {
+        const res = await getRolesAPI(params)
+        if (res.success) {
+          const data = res.data
           console.log(data)
-          this.total=data.total
-          this.rolesList=data.rows
-        }else{
+          this.rolesList = data.rows
+        } else {
           this.$message.error(res.message)
         }
-      }catch(e){
+      } catch (e) {
         console.log(e)
       }
     },
     handleClose(done) {
-      this.$confirm('确认关闭？','提示',{
+      this.$confirm('确认关闭？', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        cancelButtonText: '取消'
       })
         .then(_ => {
           done()
         })
         .catch(_ => {})
     },
-    dialogClose(){
-      //当弹窗关闭时，清空表单
+    dialogClose() {
+      // 当弹窗关闭时，清空表单
       this.$nextTick(() => {
         this.$refs.roleDialog.$refs.roleForm.resetFields()
       })
     },
-    dialogCancel(){
-      this.dialogVisible=false
+    dialogCancel() {
+      // 弹窗取消按钮触发
+      this.dialogVisible = false
     },
-    dialogConfirm(){
-      this.$refs.roleDialog.$refs.roleForm.validate(async valid =>{
-        if(valid){
-          this.dialogVisible=false
+    dialogConfirm() {
+      // 弹窗确认按钮触发
+      this.$refs.roleDialog.$refs.roleForm.validate(async valid => {
+        if (valid) {
+          try {
+            console.log(this.$refs.roleDialog.form)
+            if (this.dialog === '新增角色') {
+              await addRoleAPI(this.$refs.roleDialog.form)
+            } else if (this.dialog === '编辑角色') {
+              const res = await updateRoleByIdAPI({ ...this.editData, ...this.$refs.roleDialog.form })
+              console.log(res)
+            }
+            this.getRoles()
+            this.dialogVisible = false
+            this.$message.success(`${this.dialog}成功`)
+          } catch (e) {
+            // TODO handle the exception
+            console.log(e)
+            this.$message.success(`${this.dialog}失败`)
+          }
         }
       })
     }
-  },
-  mounted() {
-    this.getRoles(this.query)
   }
 }
 </script>
