@@ -173,8 +173,8 @@ export default {
       }
     },
       del(data) {
-        this.$confirm('确认关闭？','提示',{
-          confirmButtonText: '确定',
+        this.$confirm('确认删除？','提示',{
+          confirmButtonText: '确认',
           cancelButtonText: '取消',
         })
           .then(async _ => {

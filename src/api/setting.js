@@ -51,3 +51,16 @@ export function updateRoleByIdAPI(data) {
     data
   })
 }
+
+/**
+ * 角色管理 - 删除角色
+ * @description: 根据id删除角色
+ * @param {*}id 角色id值
+ * @return {*}
+ */
+export function deleteRoleAPI(id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method:'delete',
+  })
+}

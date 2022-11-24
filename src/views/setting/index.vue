@@ -45,10 +45,11 @@
 
             <!-- 分页区域 -->
             <el-pagination
-              :current-page="query.page"
-              :page-sizes="[10, 15, 20, 25]"
-              :page-size="query.pagesize"
-              layout="sizes, prev, pager, next, jumper"
+              :current-page.sync="query.page"
+              :page-sizes="[2, 4, 8, 25]"
+              :page-size.sync="query.pagesize"
+              :total="total"
+              layout="total,sizes, prev, pager, next, jumper"
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
             />
@@ -82,7 +83,7 @@
 </template>
 
 <script>
-import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI } from '@/api'
+import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI } from '@/api'
 import roleDialog from './components/roleDialog.vue'
 export default {
   components: {
@@ -93,9 +94,10 @@ export default {
       activeName: 'first',
       query: {
         page: 1, // 当前页面
-        pagesize: 10 // 页面显示的条数
+        pagesize: 8 // 页面显示的条数
       },
       rolesList: [], // 角色列表
+      total:0,
       dialog: '新增角色', // 弹窗标题 编辑角色 新增角色
       dialogVisible: false,
       editData: {} // 要编辑的角色数据
@@ -103,13 +105,20 @@ export default {
   },
   computed: {
     rolesListyhuan() {
-      return this.rolesList.filter(item => {
+      let roleTemp = this.rolesList.filter(item => {
         return item.name.indexOf('员') !== -1
       })
+      this.total=roleTemp.length
+      console.log(roleTemp.length)
+      return roleTemp.slice((this.query.page-1)*this.query.pagesize,this.query.page*this.query.pagesize)
+      // return roleTemp
     }
   },
   mounted() {
-    this.getRoles(this.query)
+    this.getRoles({
+        page: 1, // 当前页面
+        pagesize: 100 // 页面显示的条数
+      })
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -140,7 +149,30 @@ export default {
     },
 
     // 删除角色
-    delRoles() {},
+    delRoles(data) {
+          this.$confirm('确认删除？','提示',{
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+          })
+            .then(async _ => {
+              // 调用删除接口
+                  const delRoleRes = await deleteRoleAPI(data.id)
+                  // 根据状态值, 查看是否删除成功
+                  if (!delRoleRes.success) return this.$message.error(delRoleRes.message)
+                  // 删除成功需要给用户进行提示
+                  this.$message.success(delRoleRes.message)
+                  // 删除后需要重新获取当前页面数据
+                  this.getRoles({
+                      page: 1, // 当前页面
+                      pagesize: 100 // 页面显示的条数
+                    })
+            })
+            .catch(_ => {
+              this.$message("取消删除")
+            })
+
+
+    },
     async getRoles(params) {
       // 后台获取角色
       try {
