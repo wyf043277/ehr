@@ -50,9 +50,6 @@ export default {
         if (this.editData.id) {
           // 编辑部门
           if (item.name == value && item.pid == this.editData.pid && item.id != this.editData.id) {
-            console.log(item.id, this.editData.id)
-            console.log(this.editData)
-            console.log(this.departmentFlat)
             return true
           }
         } else {

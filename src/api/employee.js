@@ -12,3 +12,31 @@ export function getEmployeesAPI(params) {
     params
   })
 }
+
+/**
+ * 员工管理 - 增加员工
+ * @description: 增加员工
+ * @param {*}data 员工信息列表
+ * @return {*}
+ */
+export function addEmployeesAPI(data) {
+  return request({
+    url: '/sys/user',
+    method:'POST',
+    data
+  })
+}
+
+/**
+ * 员工管理 - 导入员工
+ * @description: 导入员工
+ * @param {*}data 导入员工数组
+ * @return {*}
+ */
+export function importEmployeesAPI(data) {
+  return request({
+    url: '/sys/user/batch',
+    method:'POST',
+    data
+  })
+}

@@ -1,57 +1,118 @@
 <template>
   <!-- 表单 -->
-  <el-form label-width="120px" ref="employeeForm">
-    <el-form-item label="姓名">
-      <el-input style="width:50%" placeholder="请输入姓名" />
+  <el-form label-width="120px" ref="employeeForm" :model=form :rules="rules">
+    <el-form-item label="姓名" prop="username">
+      <el-input style="width:50%" placeholder="请输入姓名" v-model="form.username" />
     </el-form-item>
-    <el-form-item label="手机">
-      <el-input style="width:50%" placeholder="请输入手机号" />
+    <el-form-item label="手机" prop="mobile">
+      <el-input style="width:50%" placeholder="请输入手机号" v-model="form.mobile"/>
     </el-form-item>
-    <el-form-item label="入职时间">
-      <el-date-picker style="width:50%" placeholder="请选择入职时间" />
+    <el-form-item label="入职时间" prop="timeOfEntry">
+      <el-date-picker style="width:50%" placeholder="请选择入职时间" v-model="form.timeOfEntry"/>
     </el-form-item>
-    <el-form-item label="聘用形式">
-      <el-select style="width:50%" placeholder="请选择" value="" />
+    <el-form-item label="聘用形式" prop="formOfEmployment">
+      <el-select style="width:50%" placeholder="请选择" value="" v-model="form.formOfEmployment">
+            <el-option
+              label="正式"
+              :value="1"
+            />
+            <el-option
+              label="非正式"
+              :value="2"
+              />
+      </el-select>
     </el-form-item>
-    <el-form-item label="工号">
-      <el-input style="width:50%" placeholder="请输入工号" />
+    <el-form-item label="工号" prop="workNumber">
+      <el-input style="width:50%" placeholder="请输入工号" v-model="form.workNumber"/>
     </el-form-item>
-    <el-form-item label="部门">
-      <el-input style="width:50%" placeholder="请选择部门" />
+    <el-form-item label="部门" prop="departmentName">
+      <el-cascader
+          v-model="form.departmentName"
+          :options="departmentData"
+          :props="{ expandTrigger: 'hover',value:'name',label:'name',emitPath:false}"
+          placeholder="请选择部门" style="width:50%"
+          :show-all-levels="false"
+          filterable></el-cascader>
     </el-form-item>
-    <el-form-item label="转正时间">
-      <el-date-picker style="width:50%" placeholder="请选择转正时间" />
+    <el-form-item label="转正时间" prop="correctionTime">
+      <el-date-picker style="width:50%" placeholder="请选择转正时间" v-model="form.correctionTime"/>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
+  import {getDepartmentsListAPI} from '@/api'
 export default {
   data() {
-    const validName = (rule, value, callback) => {
-      if (value.indexOf('员') === -1) {
-        callback(new Error(`角色名称中需要含有“员”`))
-      } else {
-        callback()
-      }
-    }
     return {
+      departmentData:[],//部门信息
       form: {
-        username: '',
-        mobile: '',
-        password:'',
-        timeOfEntry:'',
-        departmentName:'',
-        workNumber:'',
-        timeOfEntry:''
+        username: '',//用户名
+        mobile: '',//手机
+        password:'',//密码
+        timeOfEntry:'',//入职日期
+        departmentName:'',//部门名
+        workNumber:'',//工号
+        correctionTime:'',//转正时间
+        formOfEmployment:''//聘用新式
       },
       rules: {
-        username: [
-          { required: true, message: '角色不能为空', trigger: 'blur' },
-          { validator: validName, trigger: 'blur' }
-        ]
+         username: [
+                { required: true, message: '用户姓名不能为空', trigger: 'blur' },
+                { min: 1, max: 4, message: '用户姓名为1-4位', trigger: 'blur' }
+              ],
+              mobile: [
+                { required: true, message: '手机号不能为空', trigger: 'blur' },
+                { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
+              ],
+              formOfEmployment: [
+                { required: true, message: '聘用形式不能为空', trigger: 'blur' }
+              ],
+              workNumber: [
+                { required: true, message: '工号不能为空', trigger: 'blur' }
+              ],
+              departmentName: [
+                { required: true, message: '部门不能为空', trigger: 'change' }
+              ],
+              timeOfEntry: [
+                { required: true, message: '请选择入职时间', trigger: 'blur' }
+              ]
       }
     }
+  },
+  methods:{
+    handleDepart(arr, pid) {
+      //将扁平数据变得有层级
+      const res = []
+      arr.forEach((item) => {
+        if (item.pid == pid) {
+          const children = this.handleDepart(arr, item.id)
+          if (children.length != 0) {
+            res.push({ ...item, children })
+          } else {
+            res.push(item)
+          }
+        }
+      })
+      return res
+    },
+    async getDepartmentsList() {
+      try {
+        const res = await getDepartmentsListAPI()
+        const reg = /部$/
+        console.log(res)
+        const temp = res.data.depts.filter(item => {
+          return reg.test(item.name)
+          })
+        this.departmentData = this.handleDepart(temp, '')
+        console.log(this.departmentData)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+  },
+  beforeMount() {
+    this.getDepartmentsList()
   }
 }
 </script>

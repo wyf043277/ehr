@@ -20,7 +20,7 @@
         <span>哈哈哈</span>
       </template>
       <template slot="slot-right">
-        <el-button type="danger" size="small">导入excel</el-button>
+        <el-button type="danger" size="small" @click="$router.push('/excel')">导入excel</el-button>
         <el-button type="success" size="small">导出excel</el-button>
         <el-button type="primary" size="small" @click="addEmployee">新增员工</el-button>
       </template>
@@ -38,7 +38,7 @@
               <el-table-column label="工号" prop="workNumber" sortable :sort-method="workNumberSort"/>
               <el-table-column label="聘用形式" prop="formOfEmployment">
                 <template slot-scope="scope">
-                  <span>{{scope.row.formOfEmployment===1?"正式":(scope.row.formOfEmployment===2?"非正式":"未知")}}</span>
+                  <span>{{+scope.row.formOfEmployment===1?"正式":(scope.row.formOfEmployment===2?"非正式":"未知")}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="部门" prop="departmentName"/>
@@ -70,7 +70,7 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import {getEmployeesAPI} from '@/api'
+import {getEmployeesAPI,addEmployeesAPI} from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 export default {
   components: {
@@ -131,14 +131,30 @@ export default {
       dialogClose() {
         // 当弹窗关闭时，清空表单
         this.$nextTick(() => {
-          this.$refs.employeeDialog.$refs.roleForm.resetFields()
+          this.$refs.employeeDialog.$refs.employeeForm.resetFields()
         })
       },
       dialogCancel() {
         // 弹窗取消按钮触发
         this.dialogVisible = false
       },
-      dialogConfirm() {}
+      async dialogConfirm() {
+          // 弹窗确认按钮触发
+          console.log(1)
+          this.$refs.employeeDialog.$refs.employeeForm.validate(async valid => {
+            if (valid) {
+              let res = await addEmployeesAPI(this.$refs.employeeDialog.form)
+              if(res.success){
+                this.getEmployees()
+                this.dialogVisible=false
+                this.$message.success("添加成功")
+              }else{
+                this.$message.error("添加失败")
+              }
+            }
+          })
+
+      }
 
     }
 }

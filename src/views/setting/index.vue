@@ -220,7 +220,10 @@ export default {
               const res = await updateRoleByIdAPI({ ...this.editData, ...this.$refs.roleDialog.form })
               console.log(res)
             }
-            this.getRoles()
+            this.getRoles({
+                      page: 1, // 当前页面
+                      pagesize: 100 // 页面显示的条数
+                    })
             this.dialogVisible = false
             this.$message.success(`${this.dialog}成功`)
           } catch (e) {

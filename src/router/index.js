@@ -55,6 +55,15 @@ export const constantRoutes = [
     }]
   },
   // 404 page must be placed at the end !!!
+  {
+    path: '/excel',
+    component: Layout,
+    hidden: true, // 不显示到左侧菜单
+    children: [{
+      path: '',
+      component: () => import('@/views/excel/upload-excel')
+    }]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 //动态路由 需要权限控制
