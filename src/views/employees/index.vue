@@ -21,7 +21,7 @@
       </template>
       <template slot="slot-right">
         <el-button type="danger" size="small" @click="$router.push('/excel')">导入excel</el-button>
-        <el-button type="success" size="small">导出excel</el-button>
+        <el-button type="success" size="small" @click="exportEmployees">导出excel</el-button>
         <el-button type="primary" size="small" @click="addEmployee">新增员工</el-button>
       </template>
     </ActionBox>
@@ -85,7 +85,8 @@ export default {
         },
         employeesList: [], // 员工列表
         total: 0 ,// 数据总条数
-        dialogVisible: false
+        dialogVisible: false,
+        downloading:false
       }
     },
     beforeMount() {
@@ -153,9 +154,25 @@ export default {
               }
             }
           })
+      },
+      exportEmployees(){
+          this.downloadLoading = true
+          import('@/utils/Export2Excel').then(excel => {
+            const tHeader = ['序号', '姓名', '手机号', '工号', '聘用形式','部门','入职时间']
+            const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
+            const list = this.list
+            const data = this.formatJson(filterVal, list)
+            excel.export_json_to_excel({
+              header: tHeader,
+              data,
+              filename: this.filename,
+              autoWidth: this.autoWidth,
+              bookType: this.bookType
+            })
+            this.downloadLoading = false
+          })
 
       }
-
     }
 }
 </script>
