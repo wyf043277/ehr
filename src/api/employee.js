@@ -40,3 +40,15 @@ export function importEmployeesAPI(data) {
     data
   })
 }
+
+/**
+ * 员工管理 - 获取员工基本信息
+ * @description: 获取员工基本信息
+ * @param {*}id 员工id
+ * @return {*}
+ */
+export function getEmployeesBasicInfoAPI(id) {
+  return request({
+    url: `/sys/user/${id}`
+  })
+}

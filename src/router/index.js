@@ -113,6 +113,12 @@ export const asyncRoutes=[
         name:'Employees',
         component:()=>import('@/views/employees'),
         meta:{title:'员工',icon:'people'}
+      },
+      {
+        path:'detail',
+        name:'EmployeesDetail',
+        component:()=>import('@/views/employees/detail'),
+        hidden:true
       }
     ]
   },

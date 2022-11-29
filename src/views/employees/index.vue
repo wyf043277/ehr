@@ -17,7 +17,7 @@
     </el-dialog>
     <ActionBox>
       <template slot="slot-left">
-        <span>哈哈哈</span>
+        <span>共{{ total }}条记录</span>
       </template>
       <template slot="slot-right">
         <el-button type="danger" size="small" @click="$router.push('/excel')">导入excel</el-button>
@@ -44,8 +44,8 @@
         <el-table-column label="部门" prop="departmentName" />
         <el-table-column label="入职时间" prop="timeOfEntry" />
         <el-table-column label="操作" width="280">
-          <template>
-            <el-button type="text" size="small">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id}})">查看</el-button>
             <el-button type="text" size="small">分配角色</el-button>
             <el-button type="text" size="small">删除</el-button>
           </template>
