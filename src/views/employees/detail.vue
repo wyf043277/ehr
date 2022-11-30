@@ -4,9 +4,11 @@
       <el-card>
         <el-tabs value="first">
           <el-tab-pane label="登录账户设置" name="first">
-            <login-setting :user-basic-info="userBasicInfo"  @update="updateEmployeesBasicInfo"/>
+            <login-setting :user-basic-info="userBasicInfo" @update="updateEmployeesBasicInfo" />
           </el-tab-pane>
-          <el-tab-pane label="个人详情" name="second">个人详情</el-tab-pane>
+          <el-tab-pane label="个人详情" name="second">
+            <userInfo />
+          </el-tab-pane>
           <el-tab-pane label="岗位信息" name="third">岗位信息</el-tab-pane>
         </el-tabs>
       </el-card>
@@ -16,7 +18,7 @@
 <script>
 import userInfo from './components/userInfo.vue'
 import loginSetting from './components/loginSetting.vue'
-import { getEmployeesBasicInfoAPI,updateEmployeesBasicInfoAPI} from '@/api'
+import { getEmployeesBasicInfoAPI, updateEmployeesBasicInfoAPI } from '@/api'
 export default {
   components: {
     userInfo,
@@ -37,11 +39,11 @@ export default {
         this.userBasicInfo = res.data
       }
     },
-    async updateEmployeesBasicInfo(id,userInfo){
-      console.log(id,userInfo)
-      const res = await updateEmployeesBasicInfoAPI(id,userInfo)
-      if(res.success){
-        this.$message.success("更新成功")
+    async updateEmployeesBasicInfo(id, userInfo) {
+      console.log(id, userInfo)
+      const res = await updateEmployeesBasicInfoAPI(id, userInfo)
+      if (res.success) {
+        this.$message.success('更新成功')
       }
     }
   }

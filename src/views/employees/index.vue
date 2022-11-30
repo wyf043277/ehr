@@ -41,7 +41,7 @@
             <span>{{ +scope.row.formOfEmployment===1?"正式":(+scope.row.formOfEmployment===2?"非正式":"未知") }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="部门" prop="departmentName" />
+        <el-table-column label="部门" prop="departmentName" sortable />
         <el-table-column label="入职时间" prop="timeOfEntry" />
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
