@@ -52,3 +52,17 @@ export function getEmployeesBasicInfoAPI(id) {
     url: `/sys/user/${id}`
   })
 }
+
+/**
+ * 员工管理 - 保存基本信息
+ * @description: 保存基本信息
+ * @param {*}userInfo 员工基本信息对象
+ * @return {*}
+ */
+export function updateEmployeesBasicInfoAPI(id,userInfo) {
+  return request({
+    url: `/sys/user/${id}`,
+    method:'PUT',
+    data:userInfo
+  })
+}
