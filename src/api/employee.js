@@ -54,6 +54,19 @@ export function getEmployeesBasicInfoAPI(id) {
 }
 
 /**
+ * 员工管理 - 获取员工个人信息
+ * @description: 获取员工个人信息
+ * @param {*}id 员工id
+ * @return {*}
+ */
+export function getEmployeesPersonInfoAPI(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`,
+    method:'GET'
+  })
+}
+
+/**
  * 员工管理 - 保存基本信息
  * @description: 保存基本信息
  * @param {*}userInfo 员工基本信息对象
@@ -62,6 +75,21 @@ export function getEmployeesBasicInfoAPI(id) {
 export function updateEmployeesBasicInfoAPI(id,userInfo) {
   return request({
     url: `/sys/user/${id}`,
+    method:'PUT',
+    data:userInfo
+  })
+}
+
+/**
+ * 员工管理 - 保存员工个人信息
+ * @description: 保存员工个人信息
+ * @param {*}id 员工id
+ * @return {*}
+ */
+export function updateEmployeesPersonInfoAPI(id,userInfo) {
+  console.log(userInfo)
+  return request({
+    url: `/employees/${id}/personalInfo`,
     method:'PUT',
     data:userInfo
   })

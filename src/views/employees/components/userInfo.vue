@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-card shadow="always">
-      <el-form ref="loginSetting" label-width="120px" :model="form">
+    <el-card>
+      <el-form ref="personal" label-width="120px" :model="form" class="userInfo">
         <div class="left">
           <el-form-item label="工号" prop="workNumber">
             <el-input v-model="form.workNumber" style="width:50%" />
@@ -12,12 +12,12 @@
           <el-form-item label="手机" prop="mobile">
             <el-input v-model="form.mobile" style="width:80%" placeholder="请输入手机" />
           </el-form-item>
-          <el-form-item label="手机" prop="mobile">
+          <el-form-item label="员工头像" prop="staffPhoto">
             <el-upload
               class="avatar-uploader"
               action=""
               :show-file-list="false">
-             <img v-if="imageUrl" :src="imageUrl" class="avatar">
+             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -35,8 +35,110 @@
         </div>
 
         <el-form-item>
-          <el-button type="primary" @click="">保存更新</el-button>
-          <el-button @click="">返回</el-button>
+          <el-button type="primary" @click="updateBasicInfo">保存更新</el-button>
+          <el-button @click="cancel">返回</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card shadow="never">
+      <div slot="header" class="itemTitile">
+        <span>基础信息</span>
+      </div>
+      <el-form label-width="120px" ref="userBasic" :model="form">
+        <el-form-item label="最高学历" prop="theHighestDegreeOfEducation">
+          <el-select v-model="form.theHighestDegreeOfEducation" style="width:25%">
+                <el-option
+                  v-for="item in education"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="员工照片" prop="staffPhoto">
+            <el-upload
+              class="avatar-uploader"
+              action=""
+              list-type="picture-card"
+              :show-file-list="false">
+             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+        </el-form-item>
+        <el-form-item label="国家/地区" prop="nationalArea">
+          <el-select v-model="form.nationalArea" style="maxWidth:15%">
+            <el-option
+              v-for="item in area"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="护照号" prop=" passportNo">
+          <el-input v-model="form.passportNo" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="身份证号" prop="idNumber">
+          <el-input v-model="form.idNumber" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="籍贯" prop="nativePlace">
+          <el-input v-model="form.nativePlace" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="民族" prop="nation">
+          <el-input v-model="form.nation" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="婚姻状况" prop="maritalStatus">
+          <el-select v-model="form.maritalStatus" style="width:20%">
+            <el-option
+              v-for="item in marry"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="生日" prop="birthday">
+          <el-input v-model="form.birthday" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model="form.age" style="width:20%" />
+        </el-form-item>
+        <el-form-item label="星座" prop="constellation">
+          <el-select v-model="form.constellation" style="width:20%">
+            <el-option
+              v-for="item in constellation"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="血型" prop="bloodType">
+          <el-select v-model="form.bloodType" style="width:20%">
+            <el-option
+              v-for="item in bloodType"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="现居住地" prop="placeOfResidence" style="width:20%">
+          <el-input v-model="form.placeOfResidence" />
+        </el-form-item>
+        <el-form-item label="政治面貌" prop="politicalOutlook" style="width:20%">
+          <el-input v-model="form.politicalOutlook" />
+        </el-form-item>
+        <el-form-item label="入党时间" prop="timeToJoinTheParty" style="width:20%">
+          <el-date-picker
+            v-model="form.timeToJoinTheParty"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="update">保存更新</el-button>
+          <el-button @click="cancel">返回</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -45,15 +147,79 @@
 
 <script>
 export default {
+  props: {
+    personalInfo: {
+      type: Object
+    },
+    userBasicInfo: {
+      type: Object
+    }
+  },
   data() {
     return {
       form: {
-        username: '',
-        mobile: '',
-        workNumber: ''
+        username: '',//姓名
+        mobile: '',//手机
+        workNumber: '',//工号
+        timeOfEntry:'',//入职时间
+        departmentName:'',//部门
+        formOfEmployment:'',//聘用形式
+        staffPhoto:'',//员工头像
+        theHighestDegreeOfEducation:'',//最高学历
+        nationalArea:'',//国家/地区
+        passportNo:'',//护照号
+        idNumber:'',//身份证号
+        nativePlace:'',//籍贯
+        nation:'',//民族，
+        maritalStatus:'',//婚姻状况
+        birthday:'',//生日
+        age:'',//年龄
+        constellation:'',//星座
+        placeOfResidence:'',//现居住地
+        timeToJoinTheParty:''//入党时间
+      },
+      education:['初中','高中','中专','大专','本科','硕士','博士','其他'],
+      area:['中国大陆','港澳台国外'],
+      marry:['未婚','已婚','离异'],
+      constellation:['白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座','摩羯座','水瓶座','双鱼座'],
+      bloodType:['A型','B型','O型','AB型']
+    }
+  },
+  methods:{
+      cancel(){
+        this.$router.back()
+      },
+      update(){
+        this.$refs.personal.validate((valid) => {
+          if (valid) {
+            this.$emit('updatePersonalInfo',this.userBasicInfo.id,{...this.userBasicInfo,...this.form})
+          }
+        })
+      },
+      updateBasicInfo(){
+        this.$refs.userBasic.validate((valid) => {
+          if (valid) {
+            this.$emit('updatePersonalInfo',this.userBasicInfo.id,{...this.userBasicInfo,...this.form})
+          }
+        })
+      }
+  },
+  watch: {
+    personalInfo: {
+      handler(newValue, oldValue) {
+        for(let item in this.form){
+          this.form[item]=newValue[item]
+        }
+      }
+    },
+    userBasicInfo: {
+      handler(newValue, oldValue) {
+        for(let item in this.form){
+          this.form[item]=newValue[item]
+        }
       }
     }
-  }
+  },
 }
 </script>
 
@@ -61,7 +227,7 @@ export default {
   .el-card{
     border: none;
   }
-  .el-form{
+  .userInfo{
     display: flex;
     justify-content:space-between;
     flex-wrap:wrap;
@@ -90,4 +256,12 @@ export default {
         line-height: 178px;
         text-align: center;
       }
+      .itemTitile{
+        margin-left:10px
+      }
+        .avatar {
+          width: 178px;
+          height: 178px;
+          display: block;
+        }
 </style>

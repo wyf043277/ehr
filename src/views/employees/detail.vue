@@ -7,7 +7,7 @@
             <login-setting :user-basic-info="userBasicInfo" @update="updateEmployeesBasicInfo" />
           </el-tab-pane>
           <el-tab-pane label="个人详情" name="second">
-            <userInfo />
+            <userInfo :personal-info="personalInfo" @updatePersonalInfo="updateEmployeesPersonInfo" :user-basic-info="userBasicInfo" @update="updateEmployeesBasicInfo"/>
           </el-tab-pane>
           <el-tab-pane label="岗位信息" name="third">岗位信息</el-tab-pane>
         </el-tabs>
@@ -18,7 +18,7 @@
 <script>
 import userInfo from './components/userInfo.vue'
 import loginSetting from './components/loginSetting.vue'
-import { getEmployeesBasicInfoAPI, updateEmployeesBasicInfoAPI } from '@/api'
+import { getEmployeesBasicInfoAPI, updateEmployeesBasicInfoAPI,getEmployeesPersonInfoAPI,updateEmployeesPersonInfoAPI} from '@/api'
 export default {
   components: {
     userInfo,
@@ -26,11 +26,13 @@ export default {
   },
   data() {
     return {
-      userBasicInfo: {}
+      userBasicInfo: {},//基本信息,
+      personalInfo:{}//个人信息
     }
   },
   beforeMount() {
     this.getEmployeesBasicInfo(this.$route.query.id)
+    this.getEmployeesPersonInfo(this.$route.query.id)
   },
   methods: {
     async getEmployeesBasicInfo(id) {
@@ -39,13 +41,25 @@ export default {
         this.userBasicInfo = res.data
       }
     },
+    async getEmployeesPersonInfo(id) {
+      const res = await getEmployeesPersonInfoAPI(id)
+      if (res.success) {
+        this.personalInfo = res.data
+      }
+    },
     async updateEmployeesBasicInfo(id, userInfo) {
       console.log(id, userInfo)
       const res = await updateEmployeesBasicInfoAPI(id, userInfo)
       if (res.success) {
         this.$message.success('更新成功')
       }
-    }
+    },
+    async updateEmployeesPersonInfo(id, userInfo) {
+      const res = await updateEmployeesPersonInfoAPI(id, userInfo)
+      if (res.success) {
+        this.$message.success('更新成功')
+      }
+    },
   }
 }
 </script>
