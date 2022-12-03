@@ -45,7 +45,7 @@
         <el-table-column label="入职时间" prop="timeOfEntry" />
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id}})">查看</el-button>
+            <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id,formOfEmployment:scope.row.formOfEmployment}})">查看</el-button>
             <el-button type="text" size="small">分配角色</el-button>
             <el-button type="text" size="small">删除</el-button>
           </template>

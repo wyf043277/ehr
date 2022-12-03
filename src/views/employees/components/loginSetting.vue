@@ -44,7 +44,6 @@ export default {
     userBasicInfo: {
       handler(newValue, oldValue) {
         this.form.username = newValue.username
-        this.form.password = newValue.password
       }
     }
   },

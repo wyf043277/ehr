@@ -37,24 +37,27 @@ export default {
   methods: {
     async getEmployeesBasicInfo(id) {
       const res = await getEmployeesBasicInfoAPI(id)
+      console.log(res.data)
       if (res.success) {
         this.userBasicInfo = res.data
       }
     },
     async getEmployeesPersonInfo(id) {
       const res = await getEmployeesPersonInfoAPI(id)
+      console.log(res.data)
       if (res.success) {
         this.personalInfo = res.data
       }
     },
     async updateEmployeesBasicInfo(id, userInfo) {
-      console.log(id, userInfo)
+      console.log("updateEmployeesBasicInfo",id, userInfo)
       const res = await updateEmployeesBasicInfoAPI(id, userInfo)
       if (res.success) {
         this.$message.success('更新成功')
       }
     },
     async updateEmployeesPersonInfo(id, userInfo) {
+      console.log("updateEmployeesPersonInfo",id, userInfo)
       const res = await updateEmployeesPersonInfoAPI(id, userInfo)
       if (res.success) {
         this.$message.success('更新成功')

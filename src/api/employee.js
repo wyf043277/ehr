@@ -87,7 +87,6 @@ export function updateEmployeesBasicInfoAPI(id,userInfo) {
  * @return {*}
  */
 export function updateEmployeesPersonInfoAPI(id,userInfo) {
-  console.log(userInfo)
   return request({
     url: `/employees/${id}/personalInfo`,
     method:'PUT',

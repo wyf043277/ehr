@@ -10,13 +10,14 @@
             <el-input v-model="form.username" style="width:50%" />
           </el-form-item>
           <el-form-item label="手机" prop="mobile">
-            <el-input v-model="form.mobile" style="width:80%" placeholder="请输入手机" />
+            <el-input v-model="form.mobile" style="width:80%" placeholder="请输入手机" readonly/>
           </el-form-item>
           <el-form-item label="员工头像" prop="staffPhoto">
             <el-upload
               class="avatar-uploader"
               action=""
-              :show-file-list="false">
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess">
              <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -24,13 +25,37 @@
         </div>
         <div class="right">
           <el-form-item label="入职时间" prop="timeOfEntry">
-            <el-input v-model="form.timeOfEntry" style="width:50%" />
+            <!-- <el-input v-model="form.timeOfEntry" style="width:50%" /> -->
+            <el-date-picker
+              v-model="form.timeOfEntry"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="部门" prop="departmentName">
-            <el-input v-model="form.departmentName" style="width:50%" />
+            <!-- <el-input v-model="form.departmentName" style="width:50%" /> -->
+            <el-cascader
+              v-model="form.departmentName"
+              :options="departmentData"
+              :props="{ expandTrigger: 'hover',value:'name',label:'name',emitPath:false}"
+              placeholder="请选择部门"
+              style="width:50%"
+              :show-all-levels="false"
+              filterable
+            />
           </el-form-item>
           <el-form-item label="聘用形式" prop="formOfEmployment">
-            <el-input v-model="form.formOfEmployment" style="width:80%" />
+            <!-- <el-input v-model="form.formOfEmployment" style="width:80%" />
+             -->
+             <el-select v-model="form.formOfEmployment" style="width:20%">
+               <el-option
+                 v-for="item in formOfEmploymentList"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value">
+               </el-option>
+             </el-select>
           </el-form-item>
         </div>
 
@@ -123,10 +148,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="现居住地" prop="placeOfResidence" style="width:20%">
+        <el-form-item label="现居住地" prop="placeOfResidence" style="width:40%">
           <el-input v-model="form.placeOfResidence" />
         </el-form-item>
-        <el-form-item label="政治面貌" prop="politicalOutlook" style="width:20%">
+        <el-form-item label="政治面貌" prop="politicalOutlook" style="width:40%">
           <el-input v-model="form.politicalOutlook" />
         </el-form-item>
         <el-form-item label="入党时间" prop="timeToJoinTheParty" style="width:20%">
@@ -146,6 +171,7 @@
 </template>
 
 <script>
+  import { getDepartmentsListAPI } from '@/api'
 export default {
   props: {
     personalInfo: {
@@ -163,7 +189,7 @@ export default {
         workNumber: '',//工号
         timeOfEntry:'',//入职时间
         departmentName:'',//部门
-        formOfEmployment:'',//聘用形式
+        formOfEmployment:+this.$route.query.formOfEmployment===1?"正式":(+this.$route.query.formOfEmployment===2?"非正式":"未知"),//聘用形式
         staffPhoto:'',//员工头像
         theHighestDegreeOfEducation:'',//最高学历
         nationalArea:'',//国家/地区
@@ -182,40 +208,88 @@ export default {
       area:['中国大陆','港澳台国外'],
       marry:['未婚','已婚','离异'],
       constellation:['白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座','摩羯座','水瓶座','双鱼座'],
-      bloodType:['A型','B型','O型','AB型']
+      bloodType:['A型','B型','O型','AB型'],
+      formOfEmploymentList:[{
+        value:1,
+        label:"正式"
+      },{
+        value:2,
+        label:"非正式"
+      }],
+      departmentData:[],
     }
   },
+  beforeMount() {
+    this.getDepartmentsList()
+  },
   methods:{
+    handleDepart(arr, pid) {
+      // 将扁平数据变得有层级
+      const res = []
+      arr.forEach((item) => {
+        if (item.pid == pid) {
+          const children = this.handleDepart(arr, item.id)
+          if (children.length != 0) {
+            res.push({ ...item, children })
+          } else {
+            res.push(item)
+          }
+        }
+      })
+      return res
+    },
+    async getDepartmentsList() {
+      try {
+        const res = await getDepartmentsListAPI()
+        const reg = /部$/
+        const temp = res.data.depts.filter(item => {
+          if (item.name.indexOf('黑马') != -1) {
+            return false
+          }
+          return reg.test(item.name)
+        })
+        this.departmentData = this.handleDepart(temp, '')
+      } catch (e) {
+        console.log(e)
+      }
+    },
       cancel(){
         this.$router.back()
       },
       update(){
         this.$refs.personal.validate((valid) => {
           if (valid) {
-            this.$emit('updatePersonalInfo',this.userBasicInfo.id,{...this.userBasicInfo,...this.form})
+            this.$emit('updatePersonalInfo',this.userBasicInfo.id,{...this.personalInfo,...this.form})
           }
         })
       },
       updateBasicInfo(){
         this.$refs.userBasic.validate((valid) => {
           if (valid) {
-            this.$emit('updatePersonalInfo',this.userBasicInfo.id,{...this.userBasicInfo,...this.form})
+            this.$emit('update',this.userBasicInfo.id,{...this.userBasicInfo,...this.form})
           }
         })
+      },
+      handleAvatarSuccess(res, file){
+        this.form.staffPhoto = URL.createObjectURL(file.raw);
       }
   },
   watch: {
     personalInfo: {
       handler(newValue, oldValue) {
         for(let item in this.form){
-          this.form[item]=newValue[item]
+          if(newValue[item]){
+            this.form[item]=newValue[item]
+          }
         }
       }
     },
     userBasicInfo: {
       handler(newValue, oldValue) {
         for(let item in this.form){
-          this.form[item]=newValue[item]
+          if(newValue[item]){
+            this.form[item]=newValue[item]
+          }
         }
       }
     }
