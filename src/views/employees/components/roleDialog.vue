@@ -10,7 +10,7 @@
   export default{
     props: {
       roleList: {
-        type: Object
+        type: Array
       },
     },
     data() {
