@@ -19,7 +19,7 @@
               :http-request='uploadStaffPhoto'
               :show-file-list="false"
               >
-             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar" @error="imgError($event)">
+             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               <el-progress type="circle" :percentage="percentage" v-if="showProgress" class="progress" color="#"></el-progress>
             </el-upload>
@@ -286,9 +286,6 @@ export default {
         }catch(e){
           console.log(e)
         }
-      },
-      imgError(e) {
-        this.form.staffPhoto=""
       }
   },
   watch: {

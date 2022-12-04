@@ -30,21 +30,19 @@ export default {
       personalInfo:{}//个人信息
     }
   },
-  beforeMount() {
-    this.getEmployeesBasicInfo(this.$route.query.id)
-    this.getEmployeesPersonInfo(this.$route.query.id)
+ async beforeMount() {
+    await this.getEmployeesPersonInfo(this.$route.query.id)
+    await this.getEmployeesBasicInfo(this.$route.query.id)
   },
   methods: {
     async getEmployeesBasicInfo(id) {
       const res = await getEmployeesBasicInfoAPI(id)
-      console.log(res.data)
       if (res.success) {
         this.userBasicInfo = res.data
       }
     },
     async getEmployeesPersonInfo(id) {
       const res = await getEmployeesPersonInfoAPI(id)
-      console.log(res.data)
       if (res.success) {
         this.personalInfo = res.data
       }
