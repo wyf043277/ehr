@@ -4,8 +4,8 @@ import options from './options/option.js'
 
 // SECRETID 和 SECRETKEY请登录 https://console.cloud.tencent.com/cam/capi 进行查看和管理
 let cos = new COS({
-    SecretId: 'AKID1ta3IJ8kBQYTDl6D7pJYaPzLbfV5PULa',
-    SecretKey: '6OTKyObeV7WhmgMp68wVL3bw2wd7N1Th',
+    SecretId: options.SecretId,
+    SecretKey: options.SecretKey,
 });
 function uploadToCos(key,file,onProgress){
   return cos.uploadFile({
