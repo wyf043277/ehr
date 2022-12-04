@@ -15,6 +15,19 @@
         <el-button type="primary" @click="dialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="分配角色"
+      :visible.sync="roleDialogVisible"
+      width="50%"
+      :before-close="handleClose"
+      :role-list="roleList"
+    >
+      <roleDialog ref="roleDialog" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCancel">取 消</el-button>
+        <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
     <ActionBox>
       <template slot="slot-left">
         <span>共{{ total }}条记录</span>
@@ -46,7 +59,7 @@
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id,formOfEmployment:scope.row.formOfEmployment}})">查看</el-button>
-            <el-button type="text" size="small">分配角色</el-button>
+            <el-button type="text" size="smal" @click="roleDialogVisible=true">分配角色</el-button>
             <el-button type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -70,12 +83,14 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI } from '@/api'
+import { getEmployeesAPI, addEmployeesAPI,getRolesAPI} from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
+import roleDialog from './components/roleDialog.vue'
 export default {
   components: {
     ActionBox,
-    employeeDialog
+    employeeDialog,
+    roleDialog
   },
   data() {
     return {
@@ -86,11 +101,17 @@ export default {
       employeesList: [], // 员工列表
       total: 0, // 数据总条数
       dialogVisible: false,
-      downloading: false
+      roleDialogVisible:false, //分配角色弹窗
+      downloading: false,
+      roleList:[]//角色列表
     }
   },
   beforeMount() {
     this.getEmployees(this.query)
+    this.getRoles({
+        page: 1, // 当前页面
+        pagesize: 100 // 页面显示的条数
+      })
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -107,6 +128,24 @@ export default {
         console.log(res)
       } catch (e) {
         console.error(e)
+      }
+    },
+    async getRoles(params) {
+      // 后台获取角色
+      try {
+        const res = await getRolesAPI(params)
+        if (res.success) {
+          const data = res.data
+          console.log(res.data)
+          let roleTemp = data.rows.filter(item => {
+            return item.name.indexOf('员') !== -1
+          })
+          this.rolesList = roleTemp
+        } else {
+          this.$message.error(res.message)
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     workNumberSort(a, b) {
@@ -138,10 +177,10 @@ export default {
     dialogCancel() {
       // 弹窗取消按钮触发
       this.dialogVisible = false
+      this.roleDialogVisible=false
     },
     async dialogConfirm() {
       // 弹窗确认按钮触发
-      console.log(1)
       this.$refs.employeeDialog.$refs.employeeForm.validate(async valid => {
         if (valid) {
           const res = await addEmployeesAPI(this.$refs.employeeDialog.form)

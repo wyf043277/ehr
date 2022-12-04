@@ -37,6 +37,7 @@ export default {
   methods: {
     async getEmployeesBasicInfo(id) {
       const res = await getEmployeesBasicInfoAPI(id)
+      console.log(res)
       if (res.success) {
         this.userBasicInfo = res.data
       }

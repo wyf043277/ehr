@@ -179,7 +179,6 @@ export default {
         const res = await getRolesAPI(params)
         if (res.success) {
           const data = res.data
-          console.log(data)
           this.rolesList = data.rows
         } else {
           this.$message.error(res.message)
