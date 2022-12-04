@@ -245,7 +245,6 @@ export default {
     },
     dialogClose() {
       // 当弹窗关闭时，清空表单
-      console.log(this.$refs.departDialog)
       this.$nextTick(() => {
         this.$refs.departDialog.$refs.deptForm.resetFields()
       })

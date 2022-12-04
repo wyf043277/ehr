@@ -15,14 +15,15 @@
         <el-button type="primary" @click="dialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色弹窗 -->
     <el-dialog
       title="分配角色"
       :visible.sync="roleDialogVisible"
       width="50%"
       :before-close="handleClose"
-      :role-list="roleList"
+      @close="roleDialogClose"
     >
-      <roleDialog ref="roleDialog" />
+      <roleDialog ref="roleDialog" :role-list="rolesList" :employee-roles-list="employeeRolesList" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogCancel">取 消</el-button>
         <el-button type="primary" @click="dialogConfirm">确 定</el-button>
@@ -59,7 +60,7 @@
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id,formOfEmployment:scope.row.formOfEmployment}})">查看</el-button>
-            <el-button type="text" size="smal" @click="roleDialogVisible=true">分配角色</el-button>
+            <el-button type="text" size="smal" @click="assignRoles(scope.row.id)">分配角色</el-button>
             <el-button type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -83,7 +84,7 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI,getRolesAPI} from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI } from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 export default {
@@ -101,17 +102,18 @@ export default {
       employeesList: [], // 员工列表
       total: 0, // 数据总条数
       dialogVisible: false,
-      roleDialogVisible:false, //分配角色弹窗
+      roleDialogVisible: false, // 分配角色弹窗
       downloading: false,
-      roleList:[]//角色列表
+      rolesList: [], // 角色列表
+      employeeRolesList: []
     }
   },
   beforeMount() {
     this.getEmployees(this.query)
     this.getRoles({
-        page: 1, // 当前页面
-        pagesize: 100 // 页面显示的条数
-      })
+      page: 1, // 当前页面
+      pagesize: 100 // 页面显示的条数
+    })
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -125,7 +127,6 @@ export default {
         const { data: res } = await getEmployeesAPI(query)
         this.total = res.total
         this.employeesList = res.rows
-        console.log(res)
       } catch (e) {
         console.error(e)
       }
@@ -136,11 +137,11 @@ export default {
         const res = await getRolesAPI(params)
         if (res.success) {
           const data = res.data
-          console.log(res.data)
-          let roleTemp = data.rows.filter(item => {
+          const roleTemp = data.rows.filter(item => {
             return item.name.indexOf('员') !== -1
           })
           this.rolesList = roleTemp
+          console.log(this.rolesList)
         } else {
           this.$message.error(res.message)
         }
@@ -172,12 +173,18 @@ export default {
       // 当弹窗关闭时，清空表单
       this.$nextTick(() => {
         this.$refs.employeeDialog.$refs.employeeForm.resetFields()
+        this.$refs.roleDialog.$refs.roleForm.resetFields()
+      })
+    },
+    roleDialogClose() {
+      this.$nextTick(() => {
+        this.$refs.roleDialog.$refs.roleForm.resetFields()
       })
     },
     dialogCancel() {
       // 弹窗取消按钮触发
       this.dialogVisible = false
-      this.roleDialogVisible=false
+      this.roleDialogVisible = false
     },
     async dialogConfirm() {
       // 弹窗确认按钮触发
@@ -212,6 +219,20 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+    async getEmployeesPersonInfo(id) {
+      const res = await getEmployeesBasicInfoAPI(id)
+      if (res.success) {
+        this.personalInfo = res.data
+      }
+    },
+    async assignRoles(id) {
+      const res = await getEmployeesBasicInfoAPI(id)
+      if (res.success) {
+        console.log(res)
+        this.roleDialogVisible = true
+        this.employeeRolesList = res.data.roleIds
+      }
     }
   }
 }
