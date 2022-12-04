@@ -16,10 +16,12 @@
             <el-upload
               class="avatar-uploader"
               action=""
+              :http-request='uploadStaffPhoto'
               :show-file-list="false"
-              :on-success="handleAvatarSuccess">
-             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar">
+              >
+             <img v-if="form.staffPhoto" :src="form.staffPhoto" class="avatar" @error="imgError($event)">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <el-progress type="circle" :percentage="percentage" v-if="showProgress" class="progress" color="#"></el-progress>
             </el-upload>
           </el-form-item>
         </div>
@@ -172,6 +174,7 @@
 
 <script>
   import { getDepartmentsListAPI } from '@/api'
+  import {uploadToCos} from '@/cors'
 export default {
   props: {
     personalInfo: {
@@ -217,6 +220,8 @@ export default {
         label:"非正式"
       }],
       departmentData:[],
+      showProgress:false,
+      percentage:0
     }
   },
   beforeMount() {
@@ -270,8 +275,20 @@ export default {
           }
         })
       },
-      handleAvatarSuccess(res, file){
-        this.form.staffPhoto = URL.createObjectURL(file.raw);
+      async uploadStaffPhoto({file}){
+        try{
+          this.showProgress=true
+          let res = await uploadToCos(file.name,file,(processData)=>{
+            this.percentage=parseInt(processData.percent*100)
+          })
+          this.form.staffPhoto="http://"+res.Location
+          this.showProgress=false
+        }catch(e){
+          console.log(e)
+        }
+      },
+      imgError(e) {
+        this.form.staffPhoto=""
       }
   },
   watch: {
@@ -312,30 +329,39 @@ export default {
   .right{
     width: 50%;
   }
-    .avatar-uploader ::v-deep  .el-upload{
-      border: 1px solid #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+  .avatar-uploader ::v-deep  .el-upload{
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
     }
-      .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-      }
-      .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
-        text-align: center;
-      }
-      .itemTitile{
-        margin-left:10px
-      }
-        .avatar {
-          width: 178px;
-          height: 178px;
-          display: block;
-        }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .itemTitile{
+    margin-left:10px
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .progress{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background: #e4e4e4;
+    border-radius: 50%;
+    opacity: 0.9;
+  }
 </style>
