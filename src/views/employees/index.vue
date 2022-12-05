@@ -117,10 +117,16 @@ export default {
   },
   methods: {
     // 每页显示的条数发生改变时触发
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.query.size = newSize
+      this.getEmployees(this.query)
+    },
 
     // 当前页面发生改变时触发
-    handleCurrentChange(newPage) {},
+    handleCurrentChange(newPage) {
+      this.query.page = newPage
+      this.getEmployees(this.query)
+    },
     async getEmployees(query) {
       // 获取员工列表
       try {
