@@ -5,9 +5,7 @@
       <div class="left">
         <div class="tips">
           <i class="el-icon-info" />
-          <slot name="slot-left">
-            <span>文字区域</span>
-          </slot>
+          <slot name="slot-left" />
         </div>
       </div>
 
