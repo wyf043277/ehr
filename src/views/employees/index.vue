@@ -84,7 +84,7 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI,assignRoleAPI} from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI } from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 export default {
@@ -106,7 +106,7 @@ export default {
       downloading: false,
       rolesList: [], // 角色列表
       employeeRolesList: [],
-      id:""//当前操作员工id
+      id: ''// 当前操作员工id
     }
   },
   beforeMount() {
@@ -184,7 +184,7 @@ export default {
     roleDialogClose() {
       this.$nextTick(() => {
         this.$refs.roleDialog.$refs.roleForm.resetFields()
-        this.id=""
+        this.id = ''
       })
     },
     dialogCancel() {
@@ -207,17 +207,16 @@ export default {
         }
       })
     },
-    async roleDialogConfirm(){
+    async roleDialogConfirm() {
       console.log(this.$refs.roleDialog.form)
-      const res = await assignRoleAPI(this.id,this.$refs.roleDialog.form.checkedRoled)
+      const res = await assignRoleAPI(this.id, this.$refs.roleDialog.form.checkedRoles)
       if (res.success) {
         this.getEmployees()
         this.dialogVisible = false
         this.$message.success('添加成功')
-        } else {
+      } else {
         this.$message.error('添加失败')
-        }
-
+      }
     },
     exportEmployees() {
       this.downloadLoading = true
@@ -245,12 +244,12 @@ export default {
       }
     },
     async assignRoles(id) {
-      //点击分配角色
+      // 点击分配角色
       const res = await getEmployeesBasicInfoAPI(id)
       if (res.success) {
         this.roleDialogVisible = true
         this.employeeRolesList = res.data.roleIds
-        this.id=id
+        this.id = id
       }
     }
   }
