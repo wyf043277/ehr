@@ -93,3 +93,19 @@ export function updateEmployeesPersonInfoAPI(id,userInfo) {
     data:userInfo
   })
 }
+/**
+ * 角色管理 - 给员工分配角色
+ * @description: 给员工分配角色
+ * @param {*}id 员工id roleIds 角色id列表
+ * @return {*}
+ */
+export function assignRoleAPI(id,roleIds) {
+  return request({
+    url: '/sys/user/assignRoles',
+    method:'PUT',
+    data:{
+      id,
+      roleIds
+    }
+  })
+}

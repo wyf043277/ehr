@@ -26,7 +26,7 @@
       <roleDialog ref="roleDialog" :role-list="rolesList" :employee-roles-list="employeeRolesList" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogCancel">取 消</el-button>
-        <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+        <el-button type="primary" @click="roleDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
     <ActionBox>
@@ -84,7 +84,7 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI } from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI,assignRoleAPI} from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 export default {
@@ -105,7 +105,8 @@ export default {
       roleDialogVisible: false, // 分配角色弹窗
       downloading: false,
       rolesList: [], // 角色列表
-      employeeRolesList: []
+      employeeRolesList: [],
+      id:""//当前操作员工id
     }
   },
   beforeMount() {
@@ -147,7 +148,6 @@ export default {
             return item.name.indexOf('员') !== -1
           })
           this.rolesList = roleTemp
-          console.log(this.rolesList)
         } else {
           this.$message.error(res.message)
         }
@@ -179,12 +179,12 @@ export default {
       // 当弹窗关闭时，清空表单
       this.$nextTick(() => {
         this.$refs.employeeDialog.$refs.employeeForm.resetFields()
-        this.$refs.roleDialog.$refs.roleForm.resetFields()
       })
     },
     roleDialogClose() {
       this.$nextTick(() => {
         this.$refs.roleDialog.$refs.roleForm.resetFields()
+        this.id=""
       })
     },
     dialogCancel() {
@@ -206,6 +206,18 @@ export default {
           }
         }
       })
+    },
+    async roleDialogConfirm(){
+      console.log(this.$refs.roleDialog.form)
+      const res = await assignRoleAPI(this.id,this.$refs.roleDialog.form.checkedRoled)
+      if (res.success) {
+        this.getEmployees()
+        this.dialogVisible = false
+        this.$message.success('添加成功')
+        } else {
+        this.$message.error('添加失败')
+        }
+
     },
     exportEmployees() {
       this.downloadLoading = true
@@ -233,11 +245,12 @@ export default {
       }
     },
     async assignRoles(id) {
+      //点击分配角色
       const res = await getEmployeesBasicInfoAPI(id)
       if (res.success) {
-        console.log(res)
         this.roleDialogVisible = true
         this.employeeRolesList = res.data.roleIds
+        this.id=id
       }
     }
   }

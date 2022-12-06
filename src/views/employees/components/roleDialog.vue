@@ -12,10 +12,12 @@
 export default {
   props: {
     roleList: {
+      //所有角色列表
       type: Array,
       default: () => []
     },
     employeeRolesList: {
+      //员工角色
       type: Array,
       default: () => []
     }
