@@ -87,7 +87,8 @@
 </template>
 
 <script>
-import { getDepartmentsListAPI, getEmpolyeesSimpleListAPI, addDepartmentAPI, getDepartmentAPI, editDepartmentAPI, delDepartmentAPI } from '@/api'
+import { getDepartmentsListAPI, getEmpolyeesSimpleListAPI, addDepartmentAPI, getDepartmentAPI, editDepartmentAPI, delDepartmentAPI} from '@/api'
+import {handleTree} from '@/utils'
 import departDialog from './components/departDialog.vue'
 export default {
   components: {
@@ -118,7 +119,7 @@ export default {
         return reg.test(item.name)
       })
       this.departmentFlat = temp
-      return this.handleDepart(temp, '')
+      return handleTree(temp, '')
     }
   },
   beforeMount() {
@@ -133,21 +134,6 @@ export default {
       } catch (e) {
         this.$message.error('获取组织架构失败')
       }
-    },
-    handleDepart(arr, pid) {
-      // 将扁平数据变得有层级
-      const res = []
-      arr.forEach((item) => {
-        if (item.pid == pid) {
-          const children = this.handleDepart(arr, item.id)
-          if (children.length != 0) {
-            res.push({ ...item, children })
-          } else {
-            res.push(item)
-          }
-        }
-      })
-      return res
     },
     handleClose(done) {
       this.$confirm('确认关闭？', '提示', {

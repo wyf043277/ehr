@@ -44,6 +44,7 @@
 
 <script>
 import { getDepartmentsListAPI } from '@/api'
+import {handleTree} from '@/utils'
 export default {
   data() {
     return {
@@ -86,21 +87,6 @@ export default {
     this.getDepartmentsList()
   },
   methods: {
-    handleDepart(arr, pid) {
-      // 将扁平数据变得有层级
-      const res = []
-      arr.forEach((item) => {
-        if (item.pid == pid) {
-          const children = this.handleDepart(arr, item.id)
-          if (children.length != 0) {
-            res.push({ ...item, children })
-          } else {
-            res.push(item)
-          }
-        }
-      })
-      return res
-    },
     async getDepartmentsList() {
       try {
         const res = await getDepartmentsListAPI()
@@ -111,7 +97,7 @@ export default {
           }
           return reg.test(item.name)
         })
-        this.departmentData = this.handleDepart(temp, '')
+        this.departmentData = handleTree(temp, '')
         console.log(this.departmentData)
       } catch (e) {
         console.log(e)

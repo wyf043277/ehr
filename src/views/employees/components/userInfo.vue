@@ -175,6 +175,7 @@
 <script>
   import { getDepartmentsListAPI } from '@/api'
   import {uploadToCos} from '@/cors'
+  import {handleTree} from '@/utils'
 export default {
   props: {
     personalInfo: {
@@ -228,21 +229,6 @@ export default {
     this.getDepartmentsList()
   },
   methods:{
-    handleDepart(arr, pid) {
-      // 将扁平数据变得有层级
-      const res = []
-      arr.forEach((item) => {
-        if (item.pid == pid) {
-          const children = this.handleDepart(arr, item.id)
-          if (children.length != 0) {
-            res.push({ ...item, children })
-          } else {
-            res.push(item)
-          }
-        }
-      })
-      return res
-    },
     async getDepartmentsList() {
       try {
         const res = await getDepartmentsListAPI()
@@ -253,7 +239,7 @@ export default {
           }
           return reg.test(item.name)
         })
-        this.departmentData = this.handleDepart(temp, '')
+        this.departmentData = handleTree(temp, '')
       } catch (e) {
         console.log(e)
       }

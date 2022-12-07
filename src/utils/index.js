@@ -115,3 +115,19 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+export function handleTree(arr, pid) {
+      // 将扁平数据变得有层级
+      const res = []
+      arr.forEach((item) => {
+        if (item.pid == pid) {
+          const children = handleTree(arr, item.id)
+          if (children.length != 0) {
+            res.push({ ...item, children })
+          } else {
+            res.push(item)
+          }
+        }
+      })
+      return res
+    }
