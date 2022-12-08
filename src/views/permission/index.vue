@@ -17,7 +17,7 @@
       </el-dialog>
       <ActionBox>
         <template slot="slot-left">
-          <span>共10条权限</span>
+          <span>共{{total}}条权限</span>
         </template>
         <template slot="slot-right">
           <el-button type="primary" size="small" @click="addPermission('0')">添加权限</el-button>
@@ -30,7 +30,7 @@
           <el-table-column label="描述" prop="description" />>
           <el-table-column label="操作" width="280">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addPermission(scope.row.id)">添加</el-button>
+              <el-button type="text" size="small" v-if="scope.row.type!==2" @click="addPermission(scope.row.id)">添加</el-button>
               <el-button type="text" size="smal" @click="editPermission(scope.row.id)">编辑</el-button>
               <el-button type="text" size="small" @click="deletePermission(scope.row.id)">删除</el-button>
             </template>
@@ -63,7 +63,8 @@ export default {
       isEdit: false,
       dialogVisible: false,
       pid:'0' ,//当前要添加权限的父级
-      editData:{}
+      editData:{},
+      total:0
     }
   },
   beforeMount() {
@@ -111,6 +112,7 @@ export default {
         const data = res.data.filter(item => {
           return item.pid !== undefined
         })
+        this.total=data.length
         this.permissionList = handleTree(data, '0')
         console.log(this.permissionList)
       }
@@ -139,6 +141,14 @@ export default {
       this.$refs.permissionDialog.$refs.permissionForm.validate(async valid => {
         if (valid) {
           if(this.isEdit){
+            const res = await updatePermissionByIdAPI(this.$refs.permissionDialog.form.id,{...this.$refs.permissionDialog.form})
+            if (res.success) {
+              this.getPermission()
+              this.dialogVisible = false
+              this.$message.success('添加成功')
+            } else {
+              this.$message.error('添加失败')
+            }
 
           }else{
             const res = await addPermissionAPI({...this.$refs.permissionDialog.form,type:this.type,pid:this.pid})

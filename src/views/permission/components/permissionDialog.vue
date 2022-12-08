@@ -37,7 +37,8 @@ export default {
         description: '',
         enVisible: '0',
         pid:'0',
-        type:1
+        type:1,
+        id:""
       },
       rules: {
         name: [
