@@ -35,7 +35,9 @@ export default {
         name: '',
         code: '',
         description: '',
-        enVisible: '0'
+        enVisible: '0',
+        pid:'0',
+        type:1
       },
       rules: {
         name: [

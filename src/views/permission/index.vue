@@ -9,7 +9,7 @@
         :before-close="handleClose"
         @close="dialogClose"
       >
-        <permissionDialog ref="departDialog" />
+        <permissionDialog ref="permissionDialog" :editData="editData" />
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogCancel">取 消</el-button>
           <el-button type="primary" @click="dialogConfirm">确 定</el-button>
@@ -31,7 +31,7 @@
           <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="addPermission(scope.row.id)">添加</el-button>
-              <el-button type="text" size="smal" @click="editPermission">编辑</el-button>
+              <el-button type="text" size="smal" @click="editPermission(scope.row.id)">编辑</el-button>
               <el-button type="text" size="small" @click="deletePermission(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -47,6 +47,12 @@ import permissionDialog from './components/permissionDialog.vue'
 import { getPermissionAPI, addPermissionAPI, deletePermissionAPI, getPermissionByIdAPI, updatePermissionByIdAPI } from '@/api'
 import { handleTree } from '@/utils'
 export default {
+  computed: {
+    type() {
+      //是否是叶子节点
+      return this.pid==='0'?1:2
+    }
+  },
   components: {
     ActionBox,
     permissionDialog
@@ -55,7 +61,9 @@ export default {
     return {
       permissionList: [],
       isEdit: false,
-      dialogVisible: false
+      dialogVisible: false,
+      pid:'0' ,//当前要添加权限的父级
+      editData:{}
     }
   },
   beforeMount() {
@@ -65,13 +73,17 @@ export default {
     addPermission(pid) {
       // 添加权限
       this.isEdit = false
-      console.log(pid)
       this.dialogVisible = true
+      this.pid=pid
     },
-    editPermission() {
+    async editPermission(id) {
       // 编辑权限
-      this.isEdit = true
-      this.dialogVisible = true
+      let res =await getPermissionByIdAPI(id)
+      if(res.success){
+        this.isEdit = true
+        this.dialogVisible = true
+        this.editData=res.data
+      }
     },
     async deletePermission(id) {
       // 删除权限
@@ -114,13 +126,32 @@ export default {
         .catch(_ => {})
     },
     dialogClose() {
-
+      // 当弹窗关闭时，清空表单
+      this.$nextTick(() => {
+        this.$refs.permissionDialog.$refs.permissionForm.resetFields()
+      })
     },
     dialogCancel() {
       this.dialogVisible = false
     },
     dialogConfirm() {
+      // 弹窗确认按钮触发
+      this.$refs.permissionDialog.$refs.permissionForm.validate(async valid => {
+        if (valid) {
+          if(this.isEdit){
 
+          }else{
+            const res = await addPermissionAPI({...this.$refs.permissionDialog.form,type:this.type,pid:this.pid})
+            if (res.success) {
+              this.getPermission()
+              this.dialogVisible = false
+              this.$message.success('添加成功')
+            } else {
+              this.$message.error('添加失败')
+            }
+          }
+        }
+      })
     }
   }
 }
