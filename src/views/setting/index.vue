@@ -15,6 +15,22 @@
           <el-button type="primary" @click="dialogConfirm">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 分配权限弹窗 -->
+      <el-dialog
+        title="分配权限"
+        :visible.sync="assignPermissionDialogVisible"
+        width="50%"
+        :before-close="handleClose"
+        @close="assignPermissionDialogClose"
+      >
+        <assignPermissionDialog ref="assignPermissionDialog" :edit-data="editData" :permission-list='permissionList'/>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogCancel">取 消</el-button>
+          <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+        </span>
+      </el-dialog>
+
       <!-- 卡片组件 -->
       <el-card class="box-card">
         <!-- 使用 Tabs 组件完成标签页布局 -->
@@ -36,7 +52,7 @@
               <el-table-column label="描述" prop="description" align="center" />
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button size="small" type="success" @click="setRoles(scope.row)">分配权限</el-button>
+                  <el-button size="small" type="success" @click="assignPermission(scope.row)">分配权限</el-button>
                   <el-button size="small" type="primary" @click="editRoles(scope.row)">编辑</el-button>
                   <el-button size="small" type="danger" @click="delRoles(scope.row)">删除</el-button>
                 </template>
@@ -83,11 +99,14 @@
 </template>
 
 <script>
-import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI } from '@/api'
+import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI,getPermissionAPI} from '@/api'
 import roleDialog from './components/roleDialog.vue'
+import assignPermissionDialog from './components/assignPermissionDialog.vue'
+import { handleTree } from '@/utils'
 export default {
   components: {
-    roleDialog
+    roleDialog,
+    assignPermissionDialog
   },
   data() {
     return {
@@ -100,7 +119,9 @@ export default {
       total:0,
       dialog: '新增角色', // 弹窗标题 编辑角色 新增角色
       dialogVisible: false,
-      editData: {} // 要编辑的角色数据
+      editData: {} ,// 要编辑的角色数据
+      assignPermissionDialogVisible:false,
+      permissionList:[]//权限列表
     }
   },
   computed: {
@@ -119,6 +140,7 @@ export default {
         page: 1, // 当前页面
         pagesize: 100 // 页面显示的条数
       })
+    this.getPermission()
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -132,9 +154,18 @@ export default {
       this.dialog = '新增角色'
     },
 
-    // 设置角色 分配权限
-    setRoles() {},
-
+    //分配权限
+    async assignPermission(data) {
+        // 数据回显
+      try {
+      const res = await getRoleByIdAPI(data.id)
+      this.editData = res.data
+      this.assignPermissionDialogVisible=true
+      console.log(res.data)
+      } catch (e) {
+      console.log(e)
+      }
+    },
     // 编辑角色
     async editRoles(data) {
       // 数据回显
@@ -180,11 +211,23 @@ export default {
         if (res.success) {
           const data = res.data
           this.rolesList = data.rows
+          console.log(res)
         } else {
           this.$message.error(res.message)
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    async getPermission() {
+      //获取所有权限
+      const res = await getPermissionAPI()
+      if (res.success) {
+        const data = res.data.filter(item => {
+          return item.pid !== undefined
+        })
+        this.total=data.length
+        this.permissionList = handleTree(data, '0')
       }
     },
     handleClose(done) {
@@ -199,6 +242,11 @@ export default {
     },
     dialogClose() {
       // 当弹窗关闭时，清空表单
+      this.$nextTick(() => {
+        this.$refs.roleDialog.$refs.roleForm.resetFields()
+      })
+    },
+    assignPermissionDialogClose(){
       this.$nextTick(() => {
         this.$refs.roleDialog.$refs.roleForm.resetFields()
       })
