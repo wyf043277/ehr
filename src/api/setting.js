@@ -64,3 +64,20 @@ export function deleteRoleAPI(id) {
     method:'delete',
   })
 }
+
+/**
+ * 角色管理 - 给角色分配权限
+ * @description: 给角色分配权限
+ * @param {*}data   {id 角色id,permIds权限列表}
+ * @return {*}
+ */
+export function assignPremmisionAPI(id,permIds) {
+  return request({
+    url: `/sys/role/assignPrem`,
+    method:'PUT',
+    data:{
+      id,
+      permIds
+    }
+  })
+}

@@ -26,8 +26,8 @@
       >
         <assignPermissionDialog ref="assignPermissionDialog" :edit-data="editData" :permission-list='permissionList'/>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogCancel">取 消</el-button>
-          <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+          <el-button @click="assignPermissionDialogCancel">取 消</el-button>
+          <el-button type="primary" @click="assignPermissionDialogConfirm">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI,getPermissionAPI} from '@/api'
+import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI,getPermissionAPI,assignPremmisionAPI} from '@/api'
 import roleDialog from './components/roleDialog.vue'
 import assignPermissionDialog from './components/assignPermissionDialog.vue'
 import { handleTree } from '@/utils'
@@ -161,7 +161,6 @@ export default {
       const res = await getRoleByIdAPI(data.id)
       this.editData = res.data
       this.assignPermissionDialogVisible=true
-      console.log(res.data)
       } catch (e) {
       console.log(e)
       }
@@ -248,19 +247,22 @@ export default {
     },
     assignPermissionDialogClose(){
       this.$nextTick(() => {
-        this.$refs.roleDialog.$refs.roleForm.resetFields()
+        this.$refs.assignPermissionDialog.$refs.tree.setCheckedKeys([]);
       })
     },
     dialogCancel() {
       // 弹窗取消按钮触发
       this.dialogVisible = false
     },
+    assignPermissionDialogCancel(){
+      //分配权限弹窗取消
+      this.assignPermissionDialogVisible=false
+    },
     dialogConfirm() {
       // 弹窗确认按钮触发
       this.$refs.roleDialog.$refs.roleForm.validate(async valid => {
         if (valid) {
           try {
-            console.log(this.$refs.roleDialog.form)
             if (this.dialog === '新增角色') {
               await addRoleAPI(this.$refs.roleDialog.form)
             } else if (this.dialog === '编辑角色') {
@@ -280,6 +282,15 @@ export default {
           }
         }
       })
+    },
+    async assignPermissionDialogConfirm(){
+      //分配权限弹窗确定
+      console.log(this.$refs.assignPermissionDialog.$refs.tree.getCheckedKeys())
+      const res = await assignPremmisionAPI(this.editData.id,this.$refs.assignPermissionDialog.$refs.tree.getCheckedKeys())
+      if(res.success){
+        this.assignPermissionDialogVisible=false
+        this.$message.success(res.message)
+      }
     }
   }
 }

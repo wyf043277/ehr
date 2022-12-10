@@ -1,4 +1,4 @@
-import router from './router'
+import router,{asyncRoutes} from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import store from '@/store'
@@ -16,10 +16,13 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }else{
       try{
-        if(!store.getters.unserInfo){
+        if(!store.getters.userInfo.username){
           //如果没有用户信息需要去获取一次用户信息
           next()
           const userInfo=await store.dispatch('user/getInfo')
+          router.addRoutes(asyncRoutes)
+          console.log(router.options.routes)
+          store.dispatch('router/addRoutes',asyncRoutes)
         }
       }catch(e){
         console.log(e)
@@ -27,7 +30,6 @@ router.beforeEach(async(to, from, next) => {
     }
   }else{
     if(whiteList.includes(to.path)){
-      console.log(to.path)
       next()
     }else{
       next('/login')

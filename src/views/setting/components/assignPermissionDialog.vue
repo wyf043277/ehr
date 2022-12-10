@@ -1,6 +1,6 @@
 <template>
   <div>
-        <el-tree ref="tree" :data="permissionList" :props="defaultProps" show-checkbox node-key="id"></el-tree>
+        <el-tree ref="tree" :data="permissionList" :props="defaultProps" show-checkbox node-key="id" default-expand-all check-strictly></el-tree>
   </div>
 </template>
 
