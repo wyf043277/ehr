@@ -24,7 +24,7 @@
         :before-close="handleClose"
         @close="assignPermissionDialogClose"
       >
-        <assignPermissionDialog ref="assignPermissionDialog" :edit-data="editData" :permission-list='permissionList'/>
+        <assignPermissionDialog ref="assignPermissionDialog" :edit-data="editData" :permission-list="permissionList" />
         <span slot="footer" class="dialog-footer">
           <el-button @click="assignPermissionDialogCancel">取 消</el-button>
           <el-button type="primary" @click="assignPermissionDialogConfirm">确 定</el-button>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI,deleteRoleAPI,getPermissionAPI,assignPremmisionAPI} from '@/api'
+import { getRolesAPI, addRoleAPI, getRoleByIdAPI, updateRoleByIdAPI, deleteRoleAPI, getPermissionAPI, assignPremmisionAPI } from '@/api'
 import roleDialog from './components/roleDialog.vue'
 import assignPermissionDialog from './components/assignPermissionDialog.vue'
 import { handleTree } from '@/utils'
@@ -116,30 +116,30 @@ export default {
         pagesize: 8 // 页面显示的条数
       },
       rolesList: [], // 角色列表
-      total:0,
+      total: 0,
       dialog: '新增角色', // 弹窗标题 编辑角色 新增角色
       dialogVisible: false,
-      editData: {} ,// 要编辑的角色数据
-      assignPermissionDialogVisible:false,
-      permissionList:[]//权限列表
+      editData: {}, // 要编辑的角色数据
+      assignPermissionDialogVisible: false,
+      permissionList: []// 权限列表
     }
   },
   computed: {
     rolesListyhuan() {
-      let roleTemp = this.rolesList.filter(item => {
+      const roleTemp = this.rolesList.filter(item => {
         return item.name.indexOf('员') !== -1
       })
-      this.total=roleTemp.length
+      this.total = roleTemp.length
       console.log(roleTemp.length)
-      return roleTemp.slice((this.query.page-1)*this.query.pagesize,this.query.page*this.query.pagesize)
+      return roleTemp.slice((this.query.page - 1) * this.query.pagesize, this.query.page * this.query.pagesize)
       // return roleTemp
     }
   },
   mounted() {
     this.getRoles({
-        page: 1, // 当前页面
-        pagesize: 100 // 页面显示的条数
-      })
+      page: 1, // 当前页面
+      pagesize: 100 // 页面显示的条数
+    })
     this.getPermission()
   },
   methods: {
@@ -154,15 +154,15 @@ export default {
       this.dialog = '新增角色'
     },
 
-    //分配权限
+    // 分配权限
     async assignPermission(data) {
-        // 数据回显
+      // 数据回显
       try {
-      const res = await getRoleByIdAPI(data.id)
-      this.editData = res.data
-      this.assignPermissionDialogVisible=true
+        const res = await getRoleByIdAPI(data.id)
+        this.editData = res.data
+        this.assignPermissionDialogVisible = true
       } catch (e) {
-      console.log(e)
+        console.log(e)
       }
     },
     // 编辑角色
@@ -180,28 +180,26 @@ export default {
 
     // 删除角色
     delRoles(data) {
-          this.$confirm('确认删除？','提示',{
-            confirmButtonText: '确认',
-            cancelButtonText: '取消',
+      this.$confirm('确认删除？', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消'
+      })
+        .then(async _ => {
+          // 调用删除接口
+          const delRoleRes = await deleteRoleAPI(data.id)
+          // 根据状态值, 查看是否删除成功
+          if (!delRoleRes.success) return this.$message.error(delRoleRes.message)
+          // 删除成功需要给用户进行提示
+          this.$message.success(delRoleRes.message)
+          // 删除后需要重新获取当前页面数据
+          this.getRoles({
+            page: 1, // 当前页面
+            pagesize: 100 // 页面显示的条数
           })
-            .then(async _ => {
-              // 调用删除接口
-                  const delRoleRes = await deleteRoleAPI(data.id)
-                  // 根据状态值, 查看是否删除成功
-                  if (!delRoleRes.success) return this.$message.error(delRoleRes.message)
-                  // 删除成功需要给用户进行提示
-                  this.$message.success(delRoleRes.message)
-                  // 删除后需要重新获取当前页面数据
-                  this.getRoles({
-                      page: 1, // 当前页面
-                      pagesize: 100 // 页面显示的条数
-                    })
-            })
-            .catch(_ => {
-              this.$message("取消删除")
-            })
-
-
+        })
+        .catch(_ => {
+          this.$message('取消删除')
+        })
     },
     async getRoles(params) {
       // 后台获取角色
@@ -219,13 +217,12 @@ export default {
       }
     },
     async getPermission() {
-      //获取所有权限
+      // 获取所有权限
       const res = await getPermissionAPI()
       if (res.success) {
         const data = res.data.filter(item => {
           return item.pid !== undefined
         })
-        this.total=data.length
         this.permissionList = handleTree(data, '0')
       }
     },
@@ -245,18 +242,18 @@ export default {
         this.$refs.roleDialog.$refs.roleForm.resetFields()
       })
     },
-    assignPermissionDialogClose(){
+    assignPermissionDialogClose() {
       this.$nextTick(() => {
-        this.$refs.assignPermissionDialog.$refs.tree.setCheckedKeys([]);
+        this.$refs.assignPermissionDialog.$refs.tree.setCheckedKeys([])
       })
     },
     dialogCancel() {
       // 弹窗取消按钮触发
       this.dialogVisible = false
     },
-    assignPermissionDialogCancel(){
-      //分配权限弹窗取消
-      this.assignPermissionDialogVisible=false
+    assignPermissionDialogCancel() {
+      // 分配权限弹窗取消
+      this.assignPermissionDialogVisible = false
     },
     dialogConfirm() {
       // 弹窗确认按钮触发
@@ -270,9 +267,9 @@ export default {
               console.log(res)
             }
             this.getRoles({
-                      page: 1, // 当前页面
-                      pagesize: 100 // 页面显示的条数
-                    })
+              page: 1, // 当前页面
+              pagesize: 100 // 页面显示的条数
+            })
             this.dialogVisible = false
             this.$message.success(`${this.dialog}成功`)
           } catch (e) {
@@ -283,12 +280,12 @@ export default {
         }
       })
     },
-    async assignPermissionDialogConfirm(){
-      //分配权限弹窗确定
+    async assignPermissionDialogConfirm() {
+      // 分配权限弹窗确定
       console.log(this.$refs.assignPermissionDialog.$refs.tree.getCheckedKeys())
-      const res = await assignPremmisionAPI(this.editData.id,this.$refs.assignPermissionDialog.$refs.tree.getCheckedKeys())
-      if(res.success){
-        this.assignPermissionDialogVisible=false
+      const res = await assignPremmisionAPI(this.editData.id, this.$refs.assignPermissionDialog.$refs.tree.getCheckedKeys())
+      if (res.success) {
+        this.assignPermissionDialogVisible = false
         this.$message.success(res.message)
       }
     }
