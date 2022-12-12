@@ -37,7 +37,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
-
+import {resetRouter} from '@/router'
 export default {
   components: {
     Hamburger
@@ -54,6 +54,8 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/resetToken')
+      await this.$store.commit('router/RESET_STATE')
+      resetRouter()
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }

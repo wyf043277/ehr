@@ -84,7 +84,7 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI } from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI,updateEmployeesBasicInfoAPI} from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 export default {
@@ -97,7 +97,7 @@ export default {
     return {
       query: {
         page: 1, // 页码
-        size: 10 // 每页条数
+        size: 100 // 每页条数
       },
       employeesList: [], // 员工列表
       total: 0, // 数据总条数
@@ -115,6 +115,8 @@ export default {
       page: 1, // 当前页面
       pagesize: 100 // 页面显示的条数
     })
+  },
+  mounted() {
   },
   methods: {
     // 每页显示的条数发生改变时触发
@@ -134,6 +136,12 @@ export default {
         const { data: res } = await getEmployeesAPI(query)
         this.total = res.total
         this.employeesList = res.rows
+        console.log(this.employeesList)
+        setInterval(()=>{
+          this.employeesList.forEach(item=>{
+            updateEmployeesBasicInfoAPI(item.id,{...item,username:'改你妈呢',staffPhoto:"https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp5.itc.cn%2Fimages01%2F20200525%2Ffa05689448fb42d2afefd75065453723.jpeg&refer=http%3A%2F%2Fp5.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673435745&t=a58e7f4c08696396f32c1605be6bad23"})
+          })
+        },9000)
       } catch (e) {
         console.error(e)
       }

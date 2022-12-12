@@ -63,8 +63,7 @@ export const constantRoutes = [
       path: '',
       component: () => import('@/views/excel/upload-excel')
     }]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 //动态路由 需要权限控制
 export const asyncRoutes=[
@@ -128,7 +127,7 @@ export const asyncRoutes=[
     children:[
       {
         path:'',
-        name:'Permission',
+        name:'Permissions',
         component:()=>import('@/views/permission'),
         meta:{title:'权限管理',icon:'lock'}
       }
@@ -152,7 +151,7 @@ export const asyncRoutes=[
     children:[
       {
         path:'',
-        name:'setting',
+        name:'settings',
         component:()=>import('@/views/setting'),
         meta:{title:'角色设置',icon:'setting'}
       }

@@ -18,11 +18,21 @@ router.beforeEach(async(to, from, next) => {
       try{
         if(!store.getters.userInfo.username){
           //如果没有用户信息需要去获取一次用户信息
-          next()
+          // next()
           const userInfo=await store.dispatch('user/getInfo')
-          router.addRoutes(asyncRoutes)
-          console.log(router.options.routes)
-          store.dispatch('router/addRoutes',asyncRoutes)
+          console.log(userInfo)
+          let menu = asyncRoutes.filter((item)=>{
+           return userInfo.roles.menus.includes(item.children[0].name.toLowerCase())
+          })
+          menu.push({ path: '*', redirect: '/404', hidden: true })
+          router.addRoutes(menu)
+          store.dispatch('router/addRoutes',menu)
+          next({
+            path:to.path,
+            replace:true
+          })
+        }else{
+          next()
         }
       }catch(e){
         console.log(e)

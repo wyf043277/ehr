@@ -52,7 +52,7 @@ const actions = {
       getUserProfileAPI(state).then(response => {
         const {data}=response
         commit('SET_USERINFO', data)
-        resolve(response)
+        resolve(data)
       }).catch(error => {
         reject(error)
       })
