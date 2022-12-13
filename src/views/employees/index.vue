@@ -56,12 +56,16 @@
           </template>
         </el-table-column>
         <el-table-column label="部门" prop="departmentName" sortable />
-        <el-table-column label="入职时间" prop="timeOfEntry" />
+        <el-table-column label="入职时间" prop="timeOfEntry">
+          <template slot-scope="scope">
+            <span>{{formatDate(scope.row.timeOfEntry)}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="$router.push({name:'EmployeesDetail',query:{id:scope.row.id,formOfEmployment:scope.row.formOfEmployment}})">查看</el-button>
             <el-button type="text" size="smal" @click="assignRoles(scope.row.id)">分配角色</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @clcik.native="deleteEmployee(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,9 +88,10 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI,updateEmployeesBasicInfoAPI} from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI,updateEmployeesBasicInfoAPI,deleteEmployeesAPI} from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
+import moment from 'moment'
 export default {
   components: {
     ActionBox,
@@ -97,7 +102,7 @@ export default {
     return {
       query: {
         page: 1, // 页码
-        size: 100 // 每页条数
+        size: 10 // 每页条数
       },
       employeesList: [], // 员工列表
       total: 0, // 数据总条数
@@ -137,11 +142,6 @@ export default {
         this.total = res.total
         this.employeesList = res.rows
         console.log(this.employeesList)
-        setInterval(()=>{
-          this.employeesList.forEach(item=>{
-            updateEmployeesBasicInfoAPI(item.id,{...item,username:'改你妈呢',staffPhoto:"https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp5.itc.cn%2Fimages01%2F20200525%2Ffa05689448fb42d2afefd75065453723.jpeg&refer=http%3A%2F%2Fp5.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673435745&t=a58e7f4c08696396f32c1605be6bad23"})
-          })
-        },9000)
       } catch (e) {
         console.error(e)
       }
@@ -259,8 +259,32 @@ export default {
         this.employeeRolesList = res.data.roleIds
         this.id = id
       }
+    },
+    // 删除角色
+    deleteEmployee(id) {
+      console.log(123)
+      this.$confirm('确认删除？','提示',{
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+      })
+        .then(async _ => {
+          // 调用删除接口
+              const res = await deleteEmployeesAPI(id)
+              // 根据状态值, 查看是否删除成功
+              if (!res.success) return this.$message.error(res.message)
+              // 删除成功需要给用户进行提示
+              this.$message.success(res.message)
+              // 删除后需要重新获取当前页面数据
+              this.getEmployees()
+        })
+        .catch(_ => {
+          this.$message("取消删除")
+        })
+    },
+    formatDate(date){
+    return moment(date).format('YYYY-MM-DD')
     }
-  }
+  },
 }
 </script>
 

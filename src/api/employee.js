@@ -28,6 +28,19 @@ export function addEmployeesAPI(data) {
 }
 
 /**
+ * 员工管理 - 删除员工
+ * @description: 删除员工
+ * @param {*}id 员工id
+ * @return {*}
+ */
+export function deleteEmployeesAPI(id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method:'DELETE'
+  })
+}
+
+/**
  * 员工管理 - 导入员工
  * @description: 导入员工
  * @param {*}data 导入员工数组
