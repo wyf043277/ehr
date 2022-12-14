@@ -51,3 +51,12 @@
     height: 30px !important;
     font-size: 14px !important;
   }
+  .el-calendar-day {
+      height: auto;
+  }
+  .el-calendar-table .el-calendar-day {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 8px;
+      height: auto;
+  }
