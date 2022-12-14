@@ -196,7 +196,6 @@ export default {
             page: 1, // 当前页面
             pagesize: 100 // 页面显示的条数
           })
-<<<<<<< HEAD
             .then(async _ => {
               // 调用删除接口
                   const delRoleRes = await deleteRoleAPI(data.id)
@@ -213,12 +212,6 @@ export default {
             .catch(_ => {
               this.$message("取消删除")
             })
-=======
-        })
-        .catch(_ => {
-          this.$message('取消删除')
-        })
->>>>>>> 12a45fe6c6dbb108a825d2f1d93fd4ed22a09273
     },
     async getRoles(params) {
       // 后台获取角色
