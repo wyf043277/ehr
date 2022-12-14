@@ -88,7 +88,11 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI,updateEmployeesBasicInfoAPI,deleteEmployeesAPI} from '@/api'
+<<<<<<< HEAD
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI} from '@/api'
+=======
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI } from '@/api'
+>>>>>>> 12a45fe6c6dbb108a825d2f1d93fd4ed22a09273
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 import moment from 'moment'
