@@ -16,6 +16,28 @@
           </div>
         </div>
       </el-card>
+      <div class="mainInfo">
+        <div class="mainInfo-left">
+          <el-card class="box-card">
+            <div slot="header">
+              <span>工作日历</span>
+            </div>
+            <div v-for="o in 4" :key="o" class="text item">
+              {{'列表内容 ' + o }}
+            </div>
+          </el-card>
+        </div>
+        <div class="mainInfo-right">
+          <el-card class="box-card">
+            <div slot="header">
+              <span>绩效指数</span>
+            </div>
+            <div v-for="o in 4" :key="o" class="text item">
+              {{'列表内容 ' + o }}
+            </div>
+          </el-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -73,5 +95,18 @@ export default {
      margin: 0;
    }
 }
-
+.mainInfo{
+  display:flex;
+  justify-content:space-between;
+  .box-card{
+    padding:5px 10px;
+    margin-top:20px;
+  }
+  .mainInfo-left{
+    flex:1 1 auto;
+  }
+  .mainInfo-right:{
+    flex:1 1 auto;
+  }
+}
 </style>
