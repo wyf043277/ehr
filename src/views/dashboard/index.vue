@@ -22,7 +22,22 @@
             <div slot="header">
               <span>工作日历</span>
             </div>
-            <el-calendar>
+                <el-select v-model="year" placeholder="请选择">
+                  <el-option
+                    v-for="item in yearList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+            <el-calendar v-model="date">
               <template
                 slot="dateCell"
                 slot-scope="{date, data}"
@@ -57,11 +72,23 @@ export default {
   computed: {
     ...mapGetters([
       'userInfo'
-    ])
+    ]),
+    yearList(){
+      //可选年份
+      let res=[]
+      let now = parseInt(this.year)
+      for(let i=now-7;i<now+7;i++){
+        res.push({value:i+'',label:i+''})
+      }
+      return res
+    }
   },
   data() {
     return {
-      basicInfo: {}
+      basicInfo: {},
+      date:new Date(),
+      year:moment(new Date()).year(),
+      month:moment(new Date()).month()
     }
   },
   async beforeMount() {
