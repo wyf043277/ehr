@@ -60,9 +60,7 @@
             <div slot="header">
               <span>绩效指数</span>
             </div>
-            <div v-for="o in 4" :key="o" class="text item">
-              {{ '列表内容 ' + o }}
-            </div>
+            <div ref='radar' class="radar"></div>
           </el-card>
         </div>
       </div>
@@ -75,6 +73,14 @@ import { mapGetters } from 'vuex'
 import { getEmployeesBasicInfoAPI } from '@/api'
 import moment from 'moment'
 import Notice from './components/Notice.vue'
+
+import * as echarts from 'echarts/core';
+import { TitleComponent, LegendComponent } from 'echarts/components';
+import { RadarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+
+echarts.use([TitleComponent, LegendComponent, RadarChart, CanvasRenderer]);
+
 export default {
   name: 'Dashboard',
   components: {
@@ -108,6 +114,9 @@ export default {
     const res = await getEmployeesBasicInfoAPI(this.userInfo.userId)
     this.basicInfo = res.data
   },
+  mounted() {
+    this.initChart()
+  },
   methods: {
     formatDate(date) {
       return moment(date).format('D')
@@ -122,6 +131,49 @@ export default {
     },
     monthChange(month){
       this.date=new Date(this.date.setMonth(month-1))
+    },
+    initChart(){
+      var myChart = echarts.init(this.$refs.radar);
+      var option;
+      console.log(this.$refs.radar)
+      option = {
+        title: {
+          text: '基础雷达图'
+        },
+        legend: {
+          data: ['本月', '上月']
+        },
+        radar: {
+          // shape: 'circle',
+          indicator: [
+            { name: '考勤', max: 6500 },
+            { name: '技术', max: 16000 },
+            { name: '管理', max: 30000 },
+            { name: '分享', max: 38000 },
+            { name: 'bug', max: 52000 },
+            { name: '助人', max: 25000 }
+          ]
+        },
+        series: [
+          {
+            name: 'Budget vs spending',
+            type: 'radar',
+            data: [
+              {
+                value: [4200, 3000, 20000, 35000, 50000, 18000],
+                name: '本月'
+              },
+              {
+                value: [5000, 14000, 28000, 26000, 42000, 21000],
+                name: '上月'
+              }
+            ]
+          }
+        ]
+      };
+
+      option && myChart.setOption(option);
+      window.addEventListener('resize', myChart.resize);
     }
   }
 }
@@ -129,7 +181,7 @@ export default {
 
 <style lang="scss" scoped>
   .noticeInfo ::v-deep .el-card__body{
-    padding-top:0;    
+    padding-top:0;
   }
 .dashboard {
   &-container {
@@ -228,5 +280,10 @@ export default {
 }
 ::v-deep .el-calendar__header{
   display: none;
+}
+
+.radar{
+  width:100%;
+  height:500px;
 }
 </style>
