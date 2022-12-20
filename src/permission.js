@@ -51,5 +51,7 @@ router.beforeEach(async(to, from, next) => {
 router.afterEach((to) => {
   // finish progress bar
   document.title=getPageTitle(to.meta.title)
+  console.log(to)
+  store.commit('router/ADD_INCLUDES',to.name)
   NProgress.done()
 })

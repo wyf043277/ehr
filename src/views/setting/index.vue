@@ -104,6 +104,7 @@ import roleDialog from './components/roleDialog.vue'
 import assignPermissionDialog from './components/assignPermissionDialog.vue'
 import { handleTree } from '@/utils'
 export default {
+  name: 'Setting',
   components: {
     roleDialog,
     assignPermissionDialog
@@ -198,21 +199,21 @@ export default {
           })
             .then(async _ => {
               // 调用删除接口
-                  const delRoleRes = await deleteRoleAPI(data.id)
-                  // 根据状态值, 查看是否删除成功
-                  if (!delRoleRes.success) return this.$message.error(delRoleRes.message)
-                  // 删除成功需要给用户进行提示
-                  this.$message.success(delRoleRes.message)
-                  // 删除后需要重新获取当前页面数据
-                  this.getRoles({
-                      page: 1, // 当前页面
-                      pagesize: 100 // 页面显示的条数
-                    })
+              const delRoleRes = await deleteRoleAPI(data.id)
+              // 根据状态值, 查看是否删除成功
+              if (!delRoleRes.success) return this.$message.error(delRoleRes.message)
+              // 删除成功需要给用户进行提示
+              this.$message.success(delRoleRes.message)
+              // 删除后需要重新获取当前页面数据
+              this.getRoles({
+                page: 1, // 当前页面
+                pagesize: 100 // 页面显示的条数
+              })
             })
             .catch(_ => {
-              this.$message("取消删除")
+              this.$message('取消删除')
             })
-          })
+        })
     },
     async getRoles(params) {
       // 后台获取角色

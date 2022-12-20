@@ -87,10 +87,11 @@
 </template>
 
 <script>
-import { getDepartmentsListAPI, getEmpolyeesSimpleListAPI, addDepartmentAPI, getDepartmentAPI, editDepartmentAPI, delDepartmentAPI} from '@/api'
-import {handleTree} from '@/utils'
+import { getDepartmentsListAPI, getEmpolyeesSimpleListAPI, addDepartmentAPI, getDepartmentAPI, editDepartmentAPI, delDepartmentAPI } from '@/api'
+import { handleTree } from '@/utils'
 import departDialog from './components/departDialog.vue'
 export default {
+  name: 'Departments',
   components: {
     departDialog
   },

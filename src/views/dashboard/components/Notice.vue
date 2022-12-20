@@ -2,28 +2,28 @@
   <div class="notice">
     <img src="http://ihrm.itheima.net/static/img/img.0615818f.jpeg" alt="">
     <div>
-      <p>{{notice}}</p>
-      <p>{{date}}</p>
+      <p>{{ notice }}</p>
+      <p>{{ date }}</p>
     </div>
   </div>
 </template>
 
 <script>
-  export default{
-    props:{
-      notice:{
-        type:String,
-        default:()=>{}
-      },
-      date:{
-        type:String,
-        default:()=>{}
-      }
+export default {
+  props: {
+    notice: {
+      type: String,
+      default: () => {}
+    },
+    date: {
+      type: String,
+      default: () => {}
     }
   }
+}
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   .notice{
     display:flex;
     justify-content:flex-start;

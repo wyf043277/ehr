@@ -58,7 +58,7 @@
         <el-table-column label="部门" prop="departmentName" sortable />
         <el-table-column label="入职时间" prop="timeOfEntry">
           <template slot-scope="scope">
-            <span>{{formatDate(scope.row.timeOfEntry)}}</span>
+            <span>{{ formatDate(scope.row.timeOfEntry) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="280">
@@ -88,11 +88,12 @@
 
 <script>
 import ActionBox from '@/components/PageTools/ActionBox'
-import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI,updateEmployeesBasicInfoAPI,deleteEmployeesAPI} from '@/api'
+import { getEmployeesAPI, addEmployeesAPI, getRolesAPI, getEmployeesBasicInfoAPI, assignRoleAPI, updateEmployeesBasicInfoAPI, deleteEmployeesAPI } from '@/api'
 import employeeDialog from './components/employeeDialog.vue'
 import roleDialog from './components/roleDialog.vue'
 import moment from 'moment'
 export default {
+  name: 'Employees',
   components: {
     ActionBox,
     employeeDialog,
@@ -263,28 +264,28 @@ export default {
     // 删除角色
     deleteEmployee(id) {
       console.log(123)
-      this.$confirm('确认删除？','提示',{
+      this.$confirm('确认删除？', '提示', {
         confirmButtonText: '确认',
-        cancelButtonText: '取消',
+        cancelButtonText: '取消'
       })
         .then(async _ => {
           // 调用删除接口
-              const res = await deleteEmployeesAPI(id)
-              // 根据状态值, 查看是否删除成功
-              if (!res.success) return this.$message.error(res.message)
-              // 删除成功需要给用户进行提示
-              this.$message.success(res.message)
-              // 删除后需要重新获取当前页面数据
-              this.getEmployees()
+          const res = await deleteEmployeesAPI(id)
+          // 根据状态值, 查看是否删除成功
+          if (!res.success) return this.$message.error(res.message)
+          // 删除成功需要给用户进行提示
+          this.$message.success(res.message)
+          // 删除后需要重新获取当前页面数据
+          this.getEmployees()
         })
         .catch(_ => {
-          this.$message("取消删除")
+          this.$message('取消删除')
         })
     },
-    formatDate(date){
-    return moment(date).format('YYYY-MM-DD')
+    formatDate(date) {
+      return moment(date).format('YYYY-MM-DD')
     }
-  },
+  }
 }
 </script>
 
