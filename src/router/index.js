@@ -68,30 +68,6 @@ export const constantRoutes = [
 //动态路由 需要权限控制
 export const asyncRoutes=[
   {
-    path: '/approvals',
-    component: Layout,
-    children:[
-      {
-        path:'',
-        name:'Approvals',
-        component:()=>import('@/views/approvals'),
-        meta:{title:'审批',icon:'tree-table'}
-      }
-    ]
-  },
-  {
-    path: '/attendances',
-    component: Layout,
-    children:[
-      {
-        path:'',
-        name:'Attendances',
-        component:()=>import('@/views/attendances'),
-        meta:{title:'考勤',icon:'skill'}
-      }
-    ]
-  },
-  {
     path: '/departments',
     component: Layout,
     children:[
@@ -134,18 +110,6 @@ export const asyncRoutes=[
     ]
   },
   {
-    path: '/salarys',
-    component: Layout,
-    children:[
-      {
-        path:'',
-        name:'Salarys',
-        component:()=>import('@/views/salarys'),
-        meta:{title:'工资',icon:'money'}
-      }
-    ]
-  },
-  {
     path: '/setting',
     component: Layout,
     children:[
@@ -156,19 +120,7 @@ export const asyncRoutes=[
         meta:{title:'角色设置',icon:'setting'}
       }
     ]
-  },
-  {
-    path: '/social',
-    component: Layout,
-    children:[
-      {
-        path:'',
-        name:'Social',
-        component:()=>import('@/views/social'),
-        meta:{title:'社保',icon:'table'}
-      }
-    ]
-  },
+  }
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support

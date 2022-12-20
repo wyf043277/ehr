@@ -4,9 +4,10 @@
       <el-card>
         <div class="headInfo">
           <div class="staffPhoto">
-            <el-image
+           <el-image
               style="width: 100px; height: 100px;border-radius: 50%;vertical-align: middle;"
               :src="basicInfo.staffPhoto"
+              v-if="basicInfo.staffPhoto!=undefined"
               fit="contain"
             />
           </div>
@@ -146,12 +147,12 @@ export default {
         radar: {
           // shape: 'circle',
           indicator: [
-            { name: '考勤', max: 6500 },
-            { name: '技术', max: 16000 },
-            { name: '管理', max: 30000 },
-            { name: '分享', max: 38000 },
-            { name: 'bug', max: 52000 },
-            { name: '助人', max: 25000 }
+            { name: '考勤', max: 100 },
+            { name: '技术', max: 100 },
+            { name: '管理', max: 100 },
+            { name: '分享', max: 100 },
+            { name: 'bug', max: 100 },
+            { name: '助人', max: 100 }
           ]
         },
         series: [
@@ -160,11 +161,11 @@ export default {
             type: 'radar',
             data: [
               {
-                value: [4200, 3000, 20000, 35000, 50000, 18000],
+                value: [100, 86, 91, 95, 40, 80],
                 name: '本月'
               },
               {
-                value: [5000, 14000, 28000, 26000, 42000, 21000],
+                value: [90, 90, 86, 90, 50, 80],
                 name: '上月'
               }
             ]
