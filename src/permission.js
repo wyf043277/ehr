@@ -20,7 +20,6 @@ router.beforeEach(async(to, from, next) => {
           //如果没有用户信息需要去获取一次用户信息
           // next()
           const userInfo=await store.dispatch('user/getInfo')
-          console.log(userInfo)
           let menu = asyncRoutes.filter((item)=>{
            return userInfo.roles.menus.includes(item.children[0].name.toLowerCase())
           })
@@ -52,6 +51,11 @@ router.afterEach((to) => {
   // finish progress bar
   document.title=getPageTitle(to.meta.title)
   console.log(to)
-  store.commit('router/ADD_INCLUDES',to.name)
+  console.log(store.getters.includes)
+  if(to.meta&&to.meta.keepAlive){
+    if(store.getters.includes.indexOf(to.name)===-1){
+          store.commit('router/ADD_INCLUDES',to)
+    }
+  }
   NProgress.done()
 })

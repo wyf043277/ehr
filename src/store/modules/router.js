@@ -2,7 +2,8 @@ import {constantRoutes} from '@/router'
 const getDefaultState = () => {
   return {
     routes:[...constantRoutes],
-    includes:[] //快速导航条包含的路由
+    includes:[] ,//缓存的组件
+    includeRouter:[]//缓存的路由信息
   }
 }
 
@@ -15,9 +16,10 @@ const mutations = {
   ADD_ROUTES: (state, asyncRoutes) => {
     state.routes.push(...asyncRoutes)
   },
-  ADD_INCLUDES(state,name){
-    //需要缓存的组件名
-    state.includes.push(name)
+  ADD_INCLUDES(state,router){
+    //需要缓存的组件名 和缓存的路由信息   （组件名和路由名相同）
+    state.includes.push(router.name)
+    state.includeRouter.push(router)
   }
 }
 

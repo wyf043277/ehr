@@ -1,6 +1,11 @@
 <template>
   <section class="app-main">
-    <div class="tabs"></div>
+    <div class="tabs">
+      <span class="tabs-view-item" v-for="item in includeRouter" :key="item.path">
+        {{item.name}}
+        <span class="el-icon-close"></span>
+      </span>
+    </div>
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>
@@ -8,12 +13,14 @@
 </template>
 
 <script>
+  import mapGetters from 'vuex'
 export default {
   name: 'AppMain',
   computed: {
     key() {
       return this.$route.path
-    }
+    },
+    ...mapGetters(['includes','includeRouter'])
   }
 }
 </script>
@@ -40,9 +47,27 @@ export default {
 }
 .tabs{
   width: 100%;
-  height: 30px;
+  height: 36px;
   background-color: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+  line-height: 36px;
+  .tabs-view-item{
+    display: inline-block;
+    cursor: pointer;
+    height: 26px;
+    line-height: 26px;
+    border: 1px solid #d8dce5;
+    color:#495060;
+    background-color: #fff;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+  .tabs-view-item:first-of-type{
+    margin-left: 15px;
+  }
+  .tabs-view-item:last-of-type{
+    margin-right: 15px;
+  }
 }
 </style>

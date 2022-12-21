@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard',keepAlive:true}
     }]
   },
   // 404 page must be placed at the end !!!
@@ -75,7 +75,7 @@ export const asyncRoutes=[
         path:'',
         name:'Departments',
         component:()=>import('@/views/departments'),
-        meta:{title:'组织架构',icon:'tree'}
+        meta:{title:'组织架构',icon:'tree',keepAlive:true}
       }
     ]
   },
@@ -87,7 +87,7 @@ export const asyncRoutes=[
         path:'',
         name:'Employees',
         component:()=>import('@/views/employees'),
-        meta:{title:'员工',icon:'people'}
+        meta:{title:'员工',icon:'people',keepAlive:true}
       },
       {
         path:'detail',
@@ -105,7 +105,7 @@ export const asyncRoutes=[
         path:'',
         name:'Permissions',
         component:()=>import('@/views/permission'),
-        meta:{title:'权限管理',icon:'lock'}
+        meta:{title:'权限管理',icon:'lock',keepAlive:true}
       }
     ]
   },
@@ -115,9 +115,9 @@ export const asyncRoutes=[
     children:[
       {
         path:'',
-        name:'settings',
+        name:'Settings',
         component:()=>import('@/views/setting'),
-        meta:{title:'角色设置',icon:'setting'}
+        meta:{title:'角色设置',icon:'setting',keepAlive:true}
       }
     ]
   }
