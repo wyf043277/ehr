@@ -20,6 +20,9 @@ const mutations = {
     //需要缓存的组件名 和缓存的路由信息   （组件名和路由名相同）
     state.includes.push(router.name)
     state.includeRouter.push(router)
+  },
+  REMOVE_INCLUDES(state,router){
+    
   }
 }
 

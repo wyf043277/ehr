@@ -2,18 +2,20 @@
   <section class="app-main">
     <div class="tabs">
       <span class="tabs-view-item" v-for="item in includeRouter" :key="item.path">
-        {{item.name}}
+        {{item.meta.title}}
         <span class="el-icon-close"></span>
       </span>
     </div>
     <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
+      <keep-alive :include="includes">
+        <router-view :key="key" />
+      </keep-alive>
     </transition>
   </section>
 </template>
 
 <script>
-  import mapGetters from 'vuex'
+  import {mapGetters} from 'vuex'
 export default {
   name: 'AppMain',
   computed: {
