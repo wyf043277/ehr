@@ -1,9 +1,9 @@
 <template>
   <section class="app-main">
     <div class="tabs">
-      <span class="tabs-view-item" v-for="item in includeRouter" :key="item.path">
+      <span class="tabs-view-item" v-for="item in includeRouter" :key="item.path" @click="changeTab(item)">
         {{item.meta.title}}
-        <span class="el-icon-close"></span>
+        <span class="el-icon-close closeTab" @click.prevent="closeTab(item)"></span>
       </span>
     </div>
     <transition name="fade-transform" mode="out-in">
@@ -23,6 +23,14 @@ export default {
       return this.$route.path
     },
     ...mapGetters(['includes','includeRouter'])
+  },
+  methods:{
+    closeTab(item){
+      this.$store.commit('router/REMOVE_INCLUDES',item)
+    },
+    changeTab(item){
+      this.$router.replace({name:item.name})
+    }
   }
 }
 </script>
@@ -70,6 +78,9 @@ export default {
   }
   .tabs-view-item:last-of-type{
     margin-right: 15px;
+  }
+  .closeTab{
+    cursor:pointer;
   }
 }
 </style>

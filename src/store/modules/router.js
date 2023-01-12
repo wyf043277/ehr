@@ -22,7 +22,9 @@ const mutations = {
     state.includeRouter.push(router)
   },
   REMOVE_INCLUDES(state,router){
-    
+    //删除缓存组件
+    state.includes.splice(state.includes.indexOf(router.name))
+    state.includeRouter=state.includeRouter.filter(item=>item.name!=router.name)
   }
 }
 
