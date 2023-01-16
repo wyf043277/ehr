@@ -1,7 +1,7 @@
 <template>
   <section class="app-main">
     <div class="tabs">
-      <span class="tabs-view-item" v-for="item in includeRouter" :key="item.path" @click="changeTab(item)">
+      <span class="tabs-view-item" :class="{active:this.$route.name=item.name}" v-for="item in includeRouter" :key="item.path" @click="changeTab(item)">
         {{item.meta.title}}
         <span class="el-icon-close closeTab" @click.prevent="closeTab(item)"></span>
       </span>
@@ -30,6 +30,7 @@ export default {
     },
     changeTab(item){
       this.$router.replace({name:item.name})
+      console.log(this.$route)
     }
   }
 }
@@ -80,7 +81,19 @@ export default {
     margin-right: 15px;
   }
   .closeTab{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
     cursor:pointer;
+  }
+  .closeTab:hover{
+    background-color: #d8dce5;
+    border-radius: 50%;
+  }
+  .active{
+    background-color: #409eff;
+    border-color: #409eff;
+    color: #fff;
   }
 }
 </style>
