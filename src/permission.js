@@ -50,7 +50,6 @@ router.beforeEach(async(to, from, next) => {
 router.afterEach((to) => {
   // finish progress bar
   document.title=getPageTitle(to.meta.title)
-  console.log(to)
   console.log(store.getters.includes)
   if(to.meta&&to.meta.keepAlive){
     if(store.getters.includes.indexOf(to.name)===-1){

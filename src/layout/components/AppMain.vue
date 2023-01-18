@@ -1,9 +1,9 @@
 <template>
   <section class="app-main">
     <div class="tabs">
-      <span class="tabs-view-item" :class="{active:this.$route.name=item.name}" v-for="item in includeRouter" :key="item.path" @click="changeTab(item)">
+      <span class="tabs-view-item" :class="{active:isActive(item)}" v-for="item in includeRouter" :key="item.path" @click="changeTab(item)">
         {{item.meta.title}}
-        <span class="el-icon-close closeTab" @click.prevent="closeTab(item)"></span>
+        <span class="el-icon-close closeTab" @click.prevent.stop="closeTab(item)"></span>
       </span>
     </div>
     <transition name="fade-transform" mode="out-in">
@@ -27,10 +27,17 @@ export default {
   methods:{
     closeTab(item){
       this.$store.commit('router/REMOVE_INCLUDES',item)
+      console.log(this.$store.getters.includes)
+      console.log(this.$store.getters.includeRouter)
+      this.$router.replace({name:this.$store.getters.includeRouter.slice(-1).name})
     },
     changeTab(item){
       this.$router.replace({name:item.name})
-      console.log(this.$route)
+      console.log(this.$store.getters.includes)
+      console.log(this.$store.getters.includeRouter)
+    },
+    isActive(item){
+      return this.$route.name==item.name
     }
   }
 }
@@ -73,6 +80,7 @@ export default {
     background-color: #fff;
     padding: 0 8px;
     font-size: 12px;
+    margin-left: 5px;
   }
   .tabs-view-item:first-of-type{
     margin-left: 15px;
@@ -94,6 +102,16 @@ export default {
     background-color: #409eff;
     border-color: #409eff;
     color: #fff;
+  }
+  .active:before{
+    content: "";
+    background: #fff;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: relative;
+    margin-right: 2px;
   }
 }
 </style>
