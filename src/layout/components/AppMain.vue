@@ -27,14 +27,10 @@ export default {
   methods:{
     closeTab(item){
       this.$store.commit('router/REMOVE_INCLUDES',item)
-      console.log(this.$store.getters.includes)
-      console.log(this.$store.getters.includeRouter)
-      this.$router.replace({name:this.$store.getters.includeRouter.slice(-1).name})
+      this.$router.replace({name:this.$store.getters.includeRouter.slice(-1)[0].name})
     },
     changeTab(item){
       this.$router.replace({name:item.name})
-      console.log(this.$store.getters.includes)
-      console.log(this.$store.getters.includeRouter)
     },
     isActive(item){
       return this.$route.name==item.name
